@@ -1,7 +1,20 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Zap, CheckCircle2, User, Mail, Linkedin, Briefcase, MessageSquare } from 'lucide-react';
+import {
+  AlertCircle,
+  ArrowLeft,
+  Briefcase,
+  Check,
+  CheckCircle2,
+  ChevronDown,
+  Linkedin,
+  LoaderCircle,
+  Mail,
+  MessageSquare,
+  User,
+  Zap,
+} from 'lucide-react';
 
 const roles = [
   'Founder / CEO',
@@ -17,6 +30,9 @@ const roles = [
 
 export default function Waitlist() {
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [roleMenuOpen, setRoleMenuOpen] = useState(false);
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -24,15 +40,77 @@ export default function Waitlist() {
     role: '',
     useCase: '',
   });
+  const roleMenuRef = useRef(null);
+
+  useEffect(() => {
+    const handlePointerDown = (event) => {
+      if (roleMenuRef.current && !roleMenuRef.current.contains(event.target)) {
+        setRoleMenuOpen(false);
+      }
+    };
+
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        setRoleMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, []);
 
   const handleChange = (e) => {
+    setErrorMessage('');
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleRoleSelect = (role) => {
+    setErrorMessage('');
+    setForm((currentForm) => ({ ...currentForm, role }));
+    setRoleMenuOpen(false);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // In production: send to your backend / Airtable / Resend etc.
-    setSubmitted(true);
+
+    if (!form.role) {
+      setErrorMessage('Please choose the role that best fits you.');
+      setRoleMenuOpen(true);
+      return;
+    }
+
+    setSubmitting(true);
+    setErrorMessage('');
+
+    try {
+      const response = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...form,
+          signupSource: window.location.href,
+        }),
+      });
+
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Something went wrong while saving your spot.');
+      }
+
+      setSubmitted(true);
+    } catch (error) {
+      setErrorMessage(error.message || 'Something went wrong while saving your spot.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -95,6 +173,13 @@ export default function Waitlist() {
               onSubmit={handleSubmit}
               className="glass-card p-8 flex flex-col gap-5"
             >
+              {errorMessage ? (
+                <div className="flex items-start gap-3 rounded-2xl border border-red-400/20 bg-red-500/[0.08] px-4 py-3 text-sm text-red-100">
+                  <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-300" />
+                  <p className="leading-6">{errorMessage}</p>
+                </div>
+              ) : null}
+
               {/* Name */}
               <div>
                 <label className="block text-xs font-semibold text-white/50 mb-2 uppercase tracking-wider">
@@ -141,7 +226,7 @@ export default function Waitlist() {
                 <div className="relative">
                   <Linkedin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/25" />
                   <input
-                    type="url"
+                    type="text"
                     name="linkedin"
                     value={form.linkedin}
                     onChange={handleChange}
@@ -156,21 +241,86 @@ export default function Waitlist() {
                 <label className="block text-xs font-semibold text-white/50 mb-2 uppercase tracking-wider">
                   Your Role
                 </label>
-                <div className="relative">
-                  <Briefcase className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/25 pointer-events-none" />
-                  <select
-                    name="role"
-                    value={form.role}
-                    onChange={handleChange}
-                    required
-                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-[#0A66C2]/50 focus:bg-white/[0.06] transition-all appearance-none cursor-pointer"
-                    style={{ color: form.role ? '#ffffff' : 'rgba(255,255,255,0.25)' }}
+                <div className="relative" ref={roleMenuRef}>
+                  <button
+                    type="button"
+                    onClick={() => setRoleMenuOpen((open) => !open)}
+                    className={`group relative flex w-full items-center gap-3 overflow-hidden rounded-2xl border px-4 py-3.5 text-left transition-all ${
+                      roleMenuOpen
+                        ? 'border-[#1E86D4]/60 bg-[#0D1221] shadow-[0_0_0_1px_rgba(30,134,212,0.15),0_18px_48px_rgba(10,102,194,0.16)]'
+                        : 'border-white/[0.08] bg-white/[0.04] hover:border-white/[0.14] hover:bg-white/[0.06]'
+                    }`}
+                    aria-haspopup="listbox"
+                    aria-expanded={roleMenuOpen}
                   >
-                    <option value="" disabled style={{ background: '#0F1120' }}>Select your role</option>
-                    {roles.map((r) => (
-                      <option key={r} value={r} style={{ background: '#0F1120', color: '#ffffff' }}>{r}</option>
-                    ))}
-                  </select>
+                    <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(59,158,255,0.08),transparent_55%)] opacity-0 transition-opacity group-hover:opacity-100" />
+                    <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04]">
+                      <Briefcase className="h-4 w-4 text-[#73B7FF]" />
+                    </div>
+                    <div className="relative min-w-0 flex-1">
+                      <p className={`truncate text-sm font-medium ${form.role ? 'text-white' : 'text-white/35'}`}>
+                        {form.role || 'Select your role'}
+                      </p>
+                      <p className="mt-1 text-xs text-white/35">
+                        Pick the role that best matches how you use LinkedIn.
+                      </p>
+                    </div>
+                    <ChevronDown
+                      className={`relative h-4 w-4 shrink-0 text-white/40 transition-transform ${roleMenuOpen ? 'rotate-180 text-white/70' : ''}`}
+                    />
+                  </button>
+
+                  <AnimatePresence>
+                    {roleMenuOpen ? (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                        transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                        className="absolute left-0 right-0 top-[calc(100%+0.75rem)] z-20 overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0B0F1A]/95 p-2 shadow-[0_24px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl"
+                      >
+                        <div className="mb-2 px-3 pt-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/30">
+                          Choose your role
+                        </div>
+                        <div className="space-y-1">
+                          {roles.map((role) => {
+                            const active = form.role === role;
+
+                            return (
+                              <button
+                                key={role}
+                                type="button"
+                                onClick={() => handleRoleSelect(role)}
+                                className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm transition-all ${
+                                  active
+                                    ? 'bg-[#0A66C2]/18 text-white shadow-[inset_0_0_0_1px_rgba(30,134,212,0.2)]'
+                                    : 'text-white/78 hover:bg-white/[0.06] hover:text-white'
+                                }`}
+                                role="option"
+                                aria-selected={active}
+                              >
+                                <div
+                                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${
+                                    active
+                                      ? 'border-[#1E86D4]/30 bg-[#0A66C2]/20 text-[#7DBFFF]'
+                                      : 'border-white/[0.08] bg-white/[0.03] text-white/30'
+                                  }`}
+                                >
+                                  {active ? <Check className="h-4 w-4" /> : <Briefcase className="h-4 w-4" />}
+                                </div>
+                                <span className="flex-1 truncate text-left font-medium">{role}</span>
+                                {active ? (
+                                  <span className="rounded-full border border-[#1E86D4]/25 bg-[#0A66C2]/12 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#7DBFFF]">
+                                    Selected
+                                  </span>
+                                ) : null}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </motion.div>
+                    ) : null}
+                  </AnimatePresence>
                 </div>
               </div>
 
@@ -195,10 +345,13 @@ export default function Waitlist() {
               {/* Submit */}
               <button
                 type="submit"
-                className="btn-primary w-full justify-center py-4 text-base mt-2"
+                disabled={submitting}
+                className={`btn-primary mt-2 w-full justify-center py-4 text-base transition-opacity ${
+                  submitting ? 'cursor-not-allowed opacity-80' : ''
+                }`}
               >
-                <Zap className="w-4 h-4" />
-                Claim My Spot
+                {submitting ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Zap className="w-4 h-4" />}
+                {submitting ? 'Saving Your Spot...' : 'Claim My Spot'}
               </button>
 
               <p className="text-center text-xs text-white/25">
