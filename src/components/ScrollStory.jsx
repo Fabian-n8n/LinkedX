@@ -1,335 +1,487 @@
-import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { Bell, MessageCircle, TrendingUp, CheckCircle2 } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { motion, useScroll, useTransform, useMotionValueEvent, AnimatePresence } from 'framer-motion';
 
-/* ── Notification card components (LinkedIn-style) ──────────────────────── */
+/* ══════════════════════════════════════════════════════
+   LinkedIn Phone Screens  (light mode, fits 296×548px)
+══════════════════════════════════════════════════════ */
 
-function ConnectionNotif() {
+/* Screen 1 — Notifications list */
+function ScreenNotifications() {
+  const items = [
+    { avatar: 'AP', bg: '#4f46e5', name: 'Alexandru Pricopie', text: 'follows you and is inviting you to connect', time: '2m', dot: true },
+    { avatar: 'FL', bg: '#0A66C2', name: 'Felix Lee', text: 'mentioned you in a comment with 16 reactions', time: '2h', dot: false },
+    { avatar: 'MP', bg: '#065f46', name: 'MAJI PETER', text: 'and 1 other liked your comment', time: '49m', dot: false },
+    { avatar: 'KA', bg: '#b91c1c', name: 'Kiran Aftab', text: 'and 2,896 others reacted to your post', time: '49m', dot: false },
+    { avatar: 'VL', bg: '#6d28d9', name: 'Varick Lim', text: 'reacted to Sherry Jiang\'s post: 300+ builders', time: '3h', dot: false },
+  ];
+
   return (
-    <div className="notif-card w-[300px]">
-      <div className="flex items-start gap-3">
-        <div className="relative flex-shrink-0">
-          <div className="w-11 h-11 rounded-full bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white text-sm font-bold">
-            AP
-          </div>
-          <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#0A66C2] flex items-center justify-center">
-            <span className="text-white text-[8px] font-black">in</span>
+    <div style={{ background: '#F3F2EF', height: '100%', display: 'flex', flexDirection: 'column', fontFamily: 'Outfit, sans-serif' }}>
+      {/* App header */}
+      <div style={{ background: '#fff', borderBottom: '1px solid rgba(0,0,0,0.08)', padding: '10px 14px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+          <span style={{ fontWeight: 800, fontSize: 14, color: '#000' }}>Notifications</span>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <div style={{ width: 16, height: 16, background: '#e2e2e2', borderRadius: 2 }} />
+            <div style={{ width: 16, height: 16, background: '#e2e2e2', borderRadius: 2 }} />
           </div>
         </div>
-        <div className="flex-1">
-          <p className="text-gray-900 text-xs leading-snug">
-            <strong>Alexandru Pricopie</strong> follows you and is inviting you to connect
-          </p>
-          <p className="text-gray-400 text-[10px] mt-0.5 leading-tight">
-            Founder @ Elite Flow AI · Will McTighe and 1 other mutual
-          </p>
-          <div className="flex gap-2 mt-2.5">
-            <button className="text-[11px] text-[#0A66C2] border border-[#0A66C2] rounded-full px-3 py-0.5 font-semibold hover:bg-[#0A66C2]/5 transition-colors">
-              Accept
-            </button>
-            <button className="text-[11px] text-gray-500 border border-gray-300 rounded-full px-3 py-0.5 hover:bg-gray-50 transition-colors">
-              Ignore
-            </button>
+        <div style={{ display: 'flex', gap: 6 }}>
+          {['All', 'My posts', 'Mentions'].map((t, i) => (
+            <span key={t} style={{ fontSize: 9.5, fontWeight: 600, padding: '3px 10px', borderRadius: 100, background: i === 0 ? '#000' : 'transparent', color: i === 0 ? '#fff' : '#555', border: i === 0 ? 'none' : '1px solid #ccc' }}>{t}</span>
+          ))}
+        </div>
+      </div>
+
+      {/* Items */}
+      <div style={{ flex: 1, overflow: 'hidden' }}>
+        {items.map((n, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 9, padding: '9px 14px', borderBottom: '1px solid rgba(0,0,0,0.05)', background: n.dot ? 'rgba(10,102,194,0.05)' : '#fff' }}>
+            <div style={{ width: 34, height: 34, borderRadius: '50%', flexShrink: 0, background: n.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 800, color: '#fff' }}>{n.avatar}</div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <span style={{ fontSize: 9.5, fontWeight: 700, color: '#000' }}>{n.name} </span>
+              <span style={{ fontSize: 9.5, color: '#333', lineHeight: 1.4 }}>{n.text}</span>
+              <div style={{ fontSize: 8.5, color: '#0A66C2', marginTop: 2 }}>{n.time} ago</div>
+            </div>
+            {n.dot && <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#0A66C2', flexShrink: 0, marginTop: 5 }} />}
           </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* Screen 2 — Impression notification expanded */
+function ScreenImpression() {
+  return (
+    <div style={{ background: '#F3F2EF', height: '100%', fontFamily: 'Outfit, sans-serif' }}>
+      {/* Header */}
+      <div style={{ background: '#fff', padding: '10px 14px', borderBottom: '1px solid rgba(0,0,0,0.08)', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ width: 16, height: 16, background: '#e2e2e2', borderRadius: 100 }} />
+        <span style={{ fontWeight: 700, fontSize: 12, color: '#000' }}>Notifications</span>
+      </div>
+
+      {/* Expanded notification card */}
+      <div style={{ margin: '10px', background: '#fff', borderRadius: 10, boxShadow: '0 2px 8px rgba(0,0,0,0.10)', padding: '14px', border: '1px solid rgba(0,0,0,0.06)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+          <div style={{ width: 32, height: 32, borderRadius: 8, background: '#EEF3FB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 17l5-5 4 4 5-6 4 4" stroke="#0A66C2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          </div>
+          <div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: '#000' }}>Comment Performance</div>
+            <div style={{ fontSize: 8.5, color: '#666' }}>LinkedIn Analytics</div>
+          </div>
+        </div>
+
+        <div style={{ marginBottom: 12 }}>
+          <p style={{ fontSize: 11, color: '#333', lineHeight: 1.5, margin: 0 }}>Your comment has gained</p>
+          <p style={{ fontSize: 22, fontWeight: 900, color: '#0A66C2', margin: '2px 0', lineHeight: 1 }}>1,842 <span style={{ fontSize: 13, fontWeight: 600 }}>impressions</span></p>
+        </div>
+
+        {/* Mini bar chart */}
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 3, height: 40, marginBottom: 10 }}>
+          {[30, 45, 38, 55, 60, 72, 68, 85, 90, 100].map((h, i) => (
+            <div key={i} style={{ flex: 1, height: `${h}%`, background: i === 9 ? '#0A66C2' : `rgba(10,102,194,${0.15 + i * 0.08})`, borderRadius: '2px 2px 0 0' }} />
+          ))}
+        </div>
+
+        <div style={{ background: '#F3F2EF', borderRadius: 8, padding: '8px 10px', marginBottom: 8 }}>
+          <p style={{ fontSize: 8.5, color: '#555', fontStyle: 'italic', margin: 0, lineHeight: 1.5 }}>
+            "Appreciate the focus on usability for everyday folks; curious how your audio experiments changed interaction patterns..."
+          </p>
+        </div>
+        <div style={{ fontSize: 8.5, color: '#666' }}>56 minutes ago</div>
+      </div>
+
+      {/* Second notification muted */}
+      <div style={{ margin: '0 10px', background: '#fff', borderRadius: 10, padding: '10px 14px', opacity: 0.5, border: '1px solid rgba(0,0,0,0.06)' }}>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#0A66C2', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 8, fontWeight: 800, color: '#fff' }}>AP</div>
+          <p style={{ fontSize: 9, color: '#333', margin: 0 }}>Alexandru Pricopie wants to connect</p>
         </div>
       </div>
     </div>
   );
 }
 
-function ImpressionNotif() {
+/* Screen 3 — Recruiter DM */
+function ScreenRecruiter() {
   return (
-    <div className="notif-card w-[300px]">
-      <div className="flex items-start gap-3">
-        <div className="w-10 h-10 rounded-lg bg-[#EEF3FB] flex items-center justify-center flex-shrink-0">
-          <TrendingUp className="w-5 h-5 text-[#0A66C2]" />
+    <div style={{ background: '#F3F2EF', height: '100%', fontFamily: 'Outfit, sans-serif', display: 'flex', flexDirection: 'column' }}>
+      {/* Header */}
+      <div style={{ background: '#fff', padding: '10px 14px', borderBottom: '1px solid rgba(0,0,0,0.08)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span style={{ fontWeight: 800, fontSize: 13, color: '#000' }}>Messaging</span>
+          <div style={{ width: 24, height: 24, borderRadius: '50%', background: '#0A66C2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round"/></svg>
+          </div>
         </div>
-        <div className="flex-1">
-          <p className="text-gray-900 text-xs leading-snug">
-            Your comment has gained{' '}
-            <strong className="text-[#0A66C2]">1,842 impressions</strong>.
-          </p>
-          <div className="mt-1.5 border-l-2 border-gray-200 pl-2">
-            <p className="text-[10px] text-gray-400 leading-tight italic">
-              "Appreciate the focus on usability for everyday folks; curious how your audio experiments changed interaction patterns..."
+      </div>
+
+      {/* Message thread */}
+      <div style={{ flex: 1, overflow: 'hidden' }}>
+        {/* Conversation item */}
+        <div style={{ background: '#fff', borderBottom: '1px solid rgba(0,0,0,0.06)', padding: '10px 14px', display: 'flex', gap: 9, alignItems: 'flex-start' }}>
+          <div style={{ position: 'relative', flexShrink: 0 }}>
+            <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #e11d48, #be185d)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 800, color: '#fff' }}>SC</div>
+            <div style={{ position: 'absolute', bottom: 0, right: 0, width: 9, height: 9, borderRadius: '50%', background: '#22c55e', border: '1.5px solid #fff' }} />
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <span style={{ fontSize: 10, fontWeight: 700, color: '#000' }}>Samantha Carter</span>
+                <span style={{ fontSize: 7, background: '#E8A01B', color: '#000', borderRadius: 3, padding: '1px 4px', fontWeight: 700 }}>IN RECRUITER</span>
+              </div>
+              <span style={{ fontSize: 8.5, color: '#666' }}>7:16 PM</span>
+            </div>
+            <p style={{ fontSize: 9, color: '#555', margin: 0, lineHeight: 1.4 }}>
+              Hi — I'm managing a confidential search for a <strong>Lead AI PM</strong> role...
             </p>
           </div>
-          <p className="text-[10px] text-gray-400 mt-1.5">56 minutes ago</p>
         </div>
-      </div>
-    </div>
-  );
-}
 
-function RecruiterNotif() {
-  return (
-    <div className="notif-card w-[300px]">
-      {/* Header */}
-      <div className="flex items-center gap-2.5 mb-3">
-        <div className="relative flex-shrink-0">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-rose-400 to-pink-600 flex items-center justify-center text-white text-xs font-bold">
-            SC
+        {/* Message bubbles area */}
+        <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ alignSelf: 'flex-start', maxWidth: '85%' }}>
+            <div style={{ background: '#fff', borderRadius: '0 12px 12px 12px', padding: '8px 10px', boxShadow: '0 1px 3px rgba(0,0,0,0.08)', border: '1px solid rgba(0,0,0,0.06)' }}>
+              <p style={{ fontSize: 9, color: '#000', margin: 0, lineHeight: 1.5 }}>
+                Hi Fabian, I'm managing a confidential search for a <strong>Lead AI Product Manager</strong> for Advance Intelligence Group.
+              </p>
+            </div>
           </div>
-          <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-green-500 border-2 border-white" />
-        </div>
-        <div>
-          <p className="text-gray-900 text-[11px] font-semibold">Samantha Carter</p>
-          <p className="text-gray-400 text-[9px]">Executive Recruiter · Today 7:16 PM</p>
-        </div>
-        <div className="ml-auto">
-          <MessageCircle className="w-4 h-4 text-[#0A66C2]" />
+          <div style={{ alignSelf: 'flex-start', maxWidth: '85%' }}>
+            <div style={{ background: '#fff', borderRadius: '0 12px 12px 12px', padding: '8px 10px', boxShadow: '0 1px 3px rgba(0,0,0,0.08)', border: '1px solid rgba(0,0,0,0.06)' }}>
+              <p style={{ fontSize: 9, color: '#000', margin: 0, lineHeight: 1.5 }}>
+                The role offers a <strong style={{ color: '#0A66C2' }}>$200K–$270K SGD</strong> package + equity. Your profile stood out — interested?
+              </p>
+            </div>
+          </div>
+
+          {/* Typing indicator */}
+          <div style={{ alignSelf: 'flex-start', display: 'flex', gap: 4, padding: '8px 12px', background: '#fff', borderRadius: '0 12px 12px 12px', border: '1px solid rgba(0,0,0,0.06)' }}>
+            {[0,1,2].map(i => (
+              <motion.div key={i} animate={{ y: [0, -4, 0] }} transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.15 }}
+                style={{ width: 5, height: 5, borderRadius: '50%', background: '#999' }} />
+            ))}
+          </div>
         </div>
       </div>
-      <div className="bg-gray-50 rounded-lg p-2.5">
-        <p className="text-gray-700 text-[11px] leading-relaxed">
-          Hi Fabian, I'm managing a confidential search for a{' '}
-          <strong>Lead AI Product Manager</strong> for Advance Intelligence Group...{' '}
-          <strong className="text-[#0A66C2]">$200K–$270K SGD</strong> package + equity and executive perks.
-        </p>
+
+      {/* Reply bar */}
+      <div style={{ background: '#fff', borderTop: '1px solid rgba(0,0,0,0.08)', padding: '8px 14px', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ flex: 1, background: '#F3F2EF', borderRadius: 100, padding: '6px 12px', fontSize: 9, color: '#999' }}>Write a message...</div>
+        <div style={{ width: 26, height: 26, borderRadius: '50%', background: '#0A66C2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="white"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/></svg>
+        </div>
       </div>
     </div>
   );
 }
 
-function ReactionsNotif() {
+/* Screen 4 — Analytics dashboard */
+function ScreenAnalytics() {
+  const weeks = [12, 19, 15, 28, 22, 35, 31, 42, 48];
+
   return (
-    <div className="notif-card w-[300px]">
-      <div className="flex items-start gap-3">
-        <div className="flex -space-x-2 flex-shrink-0">
-          {['FW', 'KA', 'MC', 'VL'].map((init, i) => (
-            <div
-              key={init}
-              className="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-[8px] font-bold text-white"
-              style={{ background: `hsl(${200 + i * 30}, 70%, 45%)` }}
-            >
-              {init}
+    <div style={{ background: '#F3F2EF', height: '100%', fontFamily: 'Outfit, sans-serif', overflow: 'hidden' }}>
+      {/* Header */}
+      <div style={{ background: '#fff', padding: '10px 14px', borderBottom: '1px solid rgba(0,0,0,0.08)' }}>
+        <span style={{ fontWeight: 800, fontSize: 13, color: '#000' }}>Analytics</span>
+        <span style={{ fontSize: 9, color: '#555', display: 'block', marginTop: 1 }}>Private to you</span>
+      </div>
+
+      <div style={{ padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {/* Profile views stat */}
+        <div style={{ background: '#fff', borderRadius: 10, padding: '12px', border: '1px solid rgba(0,0,0,0.06)' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 8 }}>
+            <div>
+              <p style={{ fontSize: 9, color: '#555', margin: 0 }}>Profile views</p>
+              <p style={{ fontSize: 22, fontWeight: 900, color: '#000', margin: '2px 0', lineHeight: 1 }}>48</p>
+              <span style={{ fontSize: 9, color: '#22c55e', fontWeight: 700 }}>↑ +340% this week</span>
+            </div>
+            <div style={{ width: 30, height: 30, borderRadius: 8, background: '#EEF3FB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="#0A66C2" strokeWidth="2" strokeLinecap="round"/><circle cx="12" cy="7" r="4" stroke="#0A66C2" strokeWidth="2"/></svg>
+            </div>
+          </div>
+          {/* Sparkline */}
+          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, height: 28 }}>
+            {weeks.map((v, i) => (
+              <div key={i} style={{ flex: 1, height: `${(v / 48) * 100}%`, background: i === weeks.length - 1 ? '#0A66C2' : `rgba(10,102,194,${0.1 + i * 0.1})`, borderRadius: '2px 2px 0 0' }} />
+            ))}
+          </div>
+        </div>
+
+        {/* Post impressions */}
+        <div style={{ background: '#fff', borderRadius: 10, padding: '10px 12px', border: '1px solid rgba(0,0,0,0.06)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <p style={{ fontSize: 9, color: '#555', margin: 0 }}>Post impressions</p>
+              <p style={{ fontSize: 18, fontWeight: 900, color: '#000', margin: '2px 0', lineHeight: 1 }}>1,842</p>
+            </div>
+            <span style={{ fontSize: 9, color: '#22c55e', fontWeight: 700 }}>↑ +127%</span>
+          </div>
+        </div>
+
+        {/* Quick stats row */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+          {[
+            { label: 'Search appearances', value: '12', color: '#0A66C2' },
+            { label: 'New followers', value: '+24', color: '#22c55e' },
+          ].map(({ label, value, color }) => (
+            <div key={label} style={{ background: '#fff', borderRadius: 10, padding: '10px 12px', border: '1px solid rgba(0,0,0,0.06)' }}>
+              <p style={{ fontSize: 8, color: '#555', margin: 0 }}>{label}</p>
+              <p style={{ fontSize: 16, fontWeight: 900, color, margin: '3px 0 0', lineHeight: 1 }}>{value}</p>
             </div>
           ))}
         </div>
-        <div>
-          <p className="text-gray-900 text-xs leading-snug">
-            <strong>Kiran Aftab</strong> and <strong>2,896 others</strong> reacted to your post
-          </p>
-          <p className="text-gray-400 text-[10px] mt-0.5">
-            👍 💙 🎉 · 2,897 total reactions
-          </p>
+
+        {/* Hint */}
+        <div style={{ textAlign: 'center', padding: '4px 0' }}>
+          <span style={{ fontSize: 9, color: '#0A66C2', fontWeight: 600 }}>View all analytics →</span>
         </div>
       </div>
     </div>
   );
 }
 
-/* ── Phone frame wrapper ────────────────────────────────────────────────── */
-function PhoneFrame({ children, className = '' }) {
-  return (
-    <div
-      className={`w-[220px] h-[440px] rounded-[36px] overflow-hidden shadow-2xl relative flex-shrink-0 ${className}`}
-      style={{
-        background: '#1A1B2E',
-        border: '7px solid #1A1B2E',
-        boxShadow: '0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.07)',
-      }}
-    >
-      {/* Dynamic island */}
-      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-16 h-4 bg-[#0D0E1A] rounded-full z-10" />
-      {/* Screen */}
-      <div className="h-full bg-[#F3F2EF] flex flex-col overflow-hidden">
-        {/* LinkedIn notification header */}
-        <div className="bg-white pt-6 pb-2 px-3 border-b border-gray-100 flex-shrink-0">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <Bell className="w-4 h-4 text-gray-800" />
-              <span className="font-bold text-[11px] text-gray-900">Notifications</span>
-            </div>
-            <div className="text-[9px] text-[#0A66C2] font-semibold">See all</div>
-          </div>
-        </div>
-        {/* Notification list */}
-        <div className="flex-1 overflow-hidden p-2 flex flex-col gap-1.5">
-          {children}
-        </div>
-      </div>
-    </div>
-  );
-}
+const phoneScreens = [
+  <ScreenNotifications key="notif" />,
+  <ScreenImpression key="impression" />,
+  <ScreenRecruiter key="recruiter" />,
+  <ScreenAnalytics key="analytics" />,
+];
 
-/* ── Mini notification item for phone ───────────────────────────────────── */
-function MiniNotif({ avatar, name, text, time, highlighted = false }) {
-  return (
-    <div
-      className={`rounded-lg p-1.5 flex items-start gap-1.5 ${highlighted ? 'bg-[#EEF3FB]' : 'bg-white'}`}
-    >
-      <div
-        className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[7px] font-bold flex-shrink-0"
-        style={{ background: avatar.bg }}
-      >
-        {avatar.initials}
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-[7px] text-gray-700 leading-tight line-clamp-2">
-          <strong>{name}</strong> {text}
-        </p>
-        <p className="text-[6px] text-gray-400 mt-0.5">{time}</p>
-      </div>
-      {highlighted && (
-        <div className="w-1.5 h-1.5 rounded-full bg-[#0A66C2] flex-shrink-0 mt-1" />
-      )}
-    </div>
-  );
-}
-
-/* ── Story scenes ────────────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════
+   Scene data (alternating left / right)
+══════════════════════════════════════════════════════ */
 const scenes = [
   {
+    side: 'left',
     label: 'Network Growth',
-    headline: 'Your network grows\nwhile you sleep.',
-    sub: 'LinkedX engages with the right voices in your industry — every single day, in your tone, without you lifting a finger. Your profile stays active 24/7.',
-    notifs: [
-      { avatar: { initials: 'AP', bg: '#4558A9' }, name: 'Alexandru Pricopie', text: 'follows you and is inviting you to connect', time: '2m ago', highlighted: true },
-      { avatar: { initials: 'FL', bg: '#0A66C2' }, name: 'Felix Lee', text: 'mentioned you in a comment: "yea, I think the design system will change..."', time: '48m ago', highlighted: false },
-      { avatar: { initials: 'MP', bg: '#5E8B3E' }, name: 'MAJI PETER', text: 'and 1 other liked your comment', time: '49m ago', highlighted: false },
-      { avatar: { initials: 'VL', bg: '#8B3E5E' }, name: 'Varick Lim', text: 'reacted to Sherry Jiang\'s post: 300+ builders...', time: '3h ago', highlighted: false },
-    ],
+    headline: ['Your network grows', 'while you sleep.'],
+    accentLine: 1,
+    sub: 'LinkedX engages with key voices in your industry every single day — in your tone, without you lifting a finger. Connection requests roll in on autopilot.',
+    stat: { value: '50+', label: 'new connections/month' },
   },
   {
+    side: 'right',
     label: 'Impression Engine',
-    headline: 'Every comment is\na brand impression.',
+    headline: ['Every comment is', 'a brand impression.'],
+    accentLine: 1,
     sub: 'Smart comments drive 10× more profile visits than posts alone. LinkedX places you in every relevant conversation, making your name synonymous with your industry.',
-    notifs: [
-      { avatar: { initials: '📊', bg: '#0A66C2' }, name: 'LinkedIn', text: 'Your comment has gained 1,842 impressions.', time: '56m ago', highlighted: true },
-      { avatar: { initials: '📊', bg: '#0A66C2' }, name: 'LinkedIn', text: 'Your posts got 685 impressions last week.', time: '1d ago', highlighted: false },
-      { avatar: { initials: 'KA', bg: '#C24444' }, name: 'Kiran Aftab', text: 'and 1 other liked your comment: "it\'s never too late..."', time: '49m ago', highlighted: false },
-      { avatar: { initials: '📊', bg: '#0A66C2' }, name: 'LinkedIn', text: 'Your comment gained 751 impressions.', time: '48m ago', highlighted: false },
-    ],
+    stat: { value: '1,842', label: 'impressions per comment' },
   },
   {
+    side: 'left',
     label: 'Opportunity Magnet',
-    headline: 'Opportunities find\nyou, not the reverse.',
-    sub: 'A consistent, visible presence attracts recruiters, investors, and collaborators — without any cold outreach. Your LinkedIn becomes your most powerful career asset.',
-    notifs: [
-      { avatar: { initials: 'SC', bg: '#8B3E3E' }, name: 'Samantha Carter', text: 'Lead AI PM role · $200K–$270K SGD + equity...', time: '7:16 PM', highlighted: true },
-      { avatar: { initials: 'AP', bg: '#4558A9' }, name: 'Alexandru Pricopie', text: 'follows you and is inviting you to connect', time: '2m ago', highlighted: false },
-      { avatar: { initials: 'FL', bg: '#0A66C2' }, name: 'Felix Lee', text: 'mentioned you in a comment with 16 reactions', time: '2h ago', highlighted: false },
-      { avatar: { initials: '🎉', bg: '#5E8B3E' }, name: 'LinkedIn', text: 'Your post got 276 impressions and drove 2 profile viewers.', time: '1d ago', highlighted: false },
-    ],
+    headline: ['Opportunities find you,', 'not the reverse.'],
+    accentLine: 0,
+    sub: 'A consistent, visible LinkedIn presence attracts recruiters, investors, and clients — without sending a single cold message. Your profile becomes inbound-only.',
+    stat: { value: '$270K', label: 'recruiter outreach (SGD)' },
+  },
+  {
+    side: 'right',
+    label: 'Growth Analytics',
+    headline: ['See exactly', "what's working."],
+    accentLine: 1,
+    sub: 'Track which comments earned impressions, which posts grew your following, and how your LinkedIn authority is climbing — all in one dashboard, week over week.',
+    stat: { value: '+340%', label: 'profile view increase' },
   },
 ];
 
-/* ── Main section ───────────────────────────────────────────────────────── */
+/* ── Scene text block ────────────────────────────────────────────────────── */
+function SceneText({ scene, align }) {
+  return (
+    <div className={align === 'right' ? 'text-right' : 'text-left'}>
+      <p className="section-label mb-3">{scene.label}</p>
+      <h3
+        className="font-black text-white leading-[1.05] tracking-[-0.04em] mb-5"
+        style={{ fontSize: 'clamp(1.6rem, 2.8vw, 2.4rem)' }}
+      >
+        {scene.headline.map((line, i) => (
+          <span key={i}>
+            {i > 0 && <br />}
+            {i === scene.accentLine
+              ? <span className="text-gradient-accent">{line}</span>
+              : line}
+          </span>
+        ))}
+      </h3>
+      <p className="text-white/50 text-sm leading-[1.8] mb-6 max-w-[320px]" style={{ marginLeft: align === 'right' ? 'auto' : 0 }}>
+        {scene.sub}
+      </p>
+      <div
+        className="inline-flex items-baseline gap-2"
+        style={{ justifyContent: align === 'right' ? 'flex-end' : 'flex-start' }}
+      >
+        <span className="font-black text-[#1E86D4] tracking-[-0.03em]" style={{ fontSize: '2rem' }}>
+          {scene.stat.value}
+        </span>
+        <span className="text-white/35 text-sm">{scene.stat.label}</span>
+      </div>
+    </div>
+  );
+}
+
+/* ── Large phone frame ───────────────────────────────────────────────────── */
+function PhoneFrame({ children }) {
+  return (
+    <div className="relative" style={{ width: 300 }}>
+      {/* Glow */}
+      <div
+        className="absolute pointer-events-none"
+        style={{ inset: '-30px', background: 'radial-gradient(ellipse at center, rgba(10,102,194,0.25) 0%, transparent 70%)', borderRadius: '50%' }}
+      />
+      {/* Body */}
+      <div
+        style={{
+          width: 300,
+          height: 600,
+          background: '#0E0E12',
+          borderRadius: 44,
+          border: '7px solid #1E1E26',
+          boxShadow: '0 40px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.07), inset 0 0 0 1px rgba(255,255,255,0.03)',
+          overflow: 'hidden',
+          position: 'relative',
+        }}
+      >
+        {/* Dynamic island */}
+        <div style={{ position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)', width: 110, height: 28, background: '#0E0E12', borderRadius: 20, zIndex: 10 }} />
+        {/* Side buttons */}
+        <div style={{ position: 'absolute', left: -9, top: 100, width: 4, height: 32, background: '#2A2A35', borderRadius: '2px 0 0 2px' }} />
+        <div style={{ position: 'absolute', left: -9, top: 142, width: 4, height: 32, background: '#2A2A35', borderRadius: '2px 0 0 2px' }} />
+        <div style={{ position: 'absolute', right: -9, top: 120, width: 4, height: 50, background: '#2A2A35', borderRadius: '0 2px 2px 0' }} />
+
+        {/* Screen — padded for dynamic island */}
+        <div style={{ position: 'absolute', top: 44, left: 0, right: 0, bottom: 0 }}>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={children?.key ?? 0}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.35, ease: 'easeInOut' }}
+              style={{ height: '100%' }}
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════
+   Main Section
+══════════════════════════════════════════════════════ */
 export default function ScrollStory() {
   const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start start', 'end end'],
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] });
+
+  const [activeScene, setActiveScene] = useState(0);
+  useMotionValueEvent(scrollYProgress, 'change', (v) => {
+    setActiveScene(Math.min(3, Math.floor(v * 4)));
   });
 
-  // Map scroll to scene index (3 scenes over 100% scroll)
-  const scene1Opacity = useTransform(scrollYProgress, [0, 0.1, 0.28, 0.38], [1, 1, 1, 0]);
-  const scene2Opacity = useTransform(scrollYProgress, [0.33, 0.43, 0.58, 0.68], [0, 1, 1, 0]);
-  const scene3Opacity = useTransform(scrollYProgress, [0.65, 0.75, 1, 1], [0, 1, 1, 1]);
+  /* Per-scene opacity + translate */
+  const s0Op = useTransform(scrollYProgress, [0, 0.04, 0.21, 0.25], [0, 1, 1, 0]);
+  const s0X  = useTransform(scrollYProgress, [0, 0.04], [-28, 0]);
+  const s1Op = useTransform(scrollYProgress, [0.25, 0.29, 0.46, 0.5], [0, 1, 1, 0]);
+  const s1X  = useTransform(scrollYProgress, [0.25, 0.29], [28, 0]);
+  const s2Op = useTransform(scrollYProgress, [0.5, 0.54, 0.71, 0.75], [0, 1, 1, 0]);
+  const s2X  = useTransform(scrollYProgress, [0.5, 0.54], [-28, 0]);
+  const s3Op = useTransform(scrollYProgress, [0.75, 0.79, 0.96, 1], [0, 1, 1, 0]);
+  const s3X  = useTransform(scrollYProgress, [0.75, 0.79], [28, 0]);
 
-  const scene1Y = useTransform(scrollYProgress, [0, 0.38], [0, -30]);
-  const scene2Y = useTransform(scrollYProgress, [0.33, 0.43, 0.68], [30, 0, -30]);
-  const scene3Y = useTransform(scrollYProgress, [0.65, 0.75], [30, 0]);
+  const sceneOpacities = [s0Op, s1Op, s2Op, s3Op];
+  const sceneXs = [s0X, s1X, s2X, s3X];
 
-  // Phone scale & notif card entrance
-  const phone1Opacity = useTransform(scrollYProgress, [0, 0.1, 0.33, 0.43], [0, 1, 1, 0]);
-  const phone2Opacity = useTransform(scrollYProgress, [0.33, 0.43, 0.66, 0.75], [0, 1, 1, 0]);
-  const phone3Opacity = useTransform(scrollYProgress, [0.66, 0.75, 1], [0, 1, 1]);
-
-  const notifOpacity = useTransform(scrollYProgress, [0.1, 0.22], [0, 1]);
-  const notif2Opacity = useTransform(scrollYProgress, [0.43, 0.55], [0, 1]);
-  const notif3Opacity = useTransform(scrollYProgress, [0.75, 0.87], [0, 1]);
-
-  const sceneOpacities = [scene1Opacity, scene2Opacity, scene3Opacity];
-  const sceneYs = [scene1Y, scene2Y, scene3Y];
-  const phoneOpacities = [phone1Opacity, phone2Opacity, phone3Opacity];
-  const notifOpacities = [notifOpacity, notif2Opacity, notif3Opacity];
+  /* Progress dots */
+  const dot0 = useTransform(scrollYProgress, [0, 0.25], [0, 1]);
+  const dot1 = useTransform(scrollYProgress, [0.25, 0.5], [0, 1]);
+  const dot2 = useTransform(scrollYProgress, [0.5, 0.75], [0, 1]);
+  const dot3 = useTransform(scrollYProgress, [0.75, 1], [0, 1]);
+  const dotProgresses = [dot0, dot1, dot2, dot3];
 
   return (
     <section ref={ref} style={{ height: '400vh' }} className="relative">
-      <div className="sticky top-0 h-screen flex items-center overflow-hidden bg-[#07080F]">
-        {/* Background subtle glow */}
+      <div className="sticky top-0 h-screen overflow-hidden flex items-center bg-[#07080F]">
+
+        {/* Background glow */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[#0A66C2]/8 blur-3xl rounded-full" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] bg-[#0A66C2]/08 blur-3xl rounded-full" />
         </div>
 
-        <div className="max-w-7xl mx-auto px-6 w-full">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Left: changing copy */}
-            <div className="relative h-[300px] flex items-center">
-              {scenes.map((scene, i) => (
-                <motion.div
-                  key={i}
-                  style={{ opacity: sceneOpacities[i], y: sceneYs[i] }}
-                  className="absolute inset-0 flex flex-col justify-center"
-                >
-                  <p className="section-label mb-4">{scene.label}</p>
-                  <h2
-                    className="font-black text-white tracking-[-0.04em] leading-[1.05] mb-6"
-                    style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)' }}
-                  >
-                    {scene.headline.split('\n').map((line, j) => (
-                      <span key={j}>
-                        {j > 0 && <br />}
-                        {j === 1 ? (
-                          <span className="text-gradient-accent">{line}</span>
-                        ) : (
-                          line
-                        )}
-                      </span>
-                    ))}
-                  </h2>
-                  <p className="text-white/50 text-base leading-[1.75] max-w-[440px]">{scene.sub}</p>
+        <div className="w-full max-w-7xl mx-auto px-6">
+          {/* 3-column grid: left text | phone | right text */}
+          <div
+            className="hidden lg:grid items-center"
+            style={{ gridTemplateColumns: '1fr 300px 1fr', gap: '56px' }}
+          >
+            {/* ── LEFT column ─────────────────────────────── */}
+            <div className="relative" style={{ height: 380 }}>
+              {/* Scene 0 (left) */}
+              <motion.div style={{ opacity: s0Op, x: s0X, position: 'absolute', inset: 0, display: 'flex', alignItems: 'center' }}>
+                <SceneText scene={scenes[0]} align="left" />
+              </motion.div>
+              {/* Scene 2 (left) */}
+              <motion.div style={{ opacity: s2Op, x: s2X, position: 'absolute', inset: 0, display: 'flex', alignItems: 'center' }}>
+                <SceneText scene={scenes[2]} align="left" />
+              </motion.div>
+            </div>
 
-                  {/* Progress dots */}
-                  <div className="flex gap-2 mt-8">
-                    {scenes.map((_, j) => (
-                      <div
-                        key={j}
-                        className={`h-1 rounded-full transition-all duration-500 ${
-                          j === i ? 'w-8 bg-[#0A66C2]' : 'w-4 bg-white/15'
-                        }`}
+            {/* ── CENTER: Phone ────────────────────────────── */}
+            <div className="flex flex-col items-center gap-6">
+              <PhoneFrame key={activeScene}>
+                {phoneScreens[activeScene]}
+              </PhoneFrame>
+
+              {/* Progress dots */}
+              <div className="flex items-center gap-2">
+                {scenes.map((_, i) => (
+                  <div key={i} className="relative h-1 rounded-full overflow-hidden" style={{ width: i === activeScene ? 28 : 12, background: 'rgba(255,255,255,0.12)', transition: 'width 0.3s ease' }}>
+                    {i === activeScene && (
+                      <motion.div
+                        key={activeScene}
+                        className="absolute inset-0 rounded-full bg-[#1E86D4]"
+                        style={{ scaleX: dotProgresses[i], originX: 0 }}
                       />
-                    ))}
+                    )}
                   </div>
-                </motion.div>
-              ))}
+                ))}
+              </div>
             </div>
 
-            {/* Right: phone + floating notif */}
-            <div className="relative flex items-center justify-center" style={{ height: 480 }}>
-              {scenes.map((scene, i) => (
-                <motion.div
-                  key={i}
-                  style={{ opacity: phoneOpacities[i] }}
-                  className="absolute"
-                >
-                  <PhoneFrame>
-                    {scene.notifs.map((n, j) => (
-                      <MiniNotif
-                        key={j}
-                        avatar={n.avatar}
-                        name={n.name}
-                        text={n.text}
-                        time={n.time}
-                        highlighted={n.highlighted}
-                      />
-                    ))}
-                  </PhoneFrame>
-
-                  {/* Floating notification card outside phone */}
-                  <motion.div
-                    style={{ opacity: notifOpacities[i] }}
-                    className="absolute -right-[120px] top-1/4"
-                  >
-                    {i === 0 && <ConnectionNotif />}
-                    {i === 1 && <ImpressionNotif />}
-                    {i === 2 && <RecruiterNotif />}
-                  </motion.div>
-                </motion.div>
-              ))}
+            {/* ── RIGHT column ─────────────────────────────── */}
+            <div className="relative" style={{ height: 380 }}>
+              {/* Scene 1 (right) */}
+              <motion.div style={{ opacity: s1Op, x: s1X, position: 'absolute', inset: 0, display: 'flex', alignItems: 'center' }}>
+                <SceneText scene={scenes[1]} align="right" />
+              </motion.div>
+              {/* Scene 3 (right) */}
+              <motion.div style={{ opacity: s3Op, x: s3X, position: 'absolute', inset: 0, display: 'flex', alignItems: 'center' }}>
+                <SceneText scene={scenes[3]} align="right" />
+              </motion.div>
             </div>
+          </div>
+
+          {/* ── Mobile fallback: stacked ─────────────────────────────── */}
+          <div className="lg:hidden flex flex-col items-center gap-12">
+            <div className="flex justify-center">
+              <PhoneFrame key={activeScene}>
+                {phoneScreens[activeScene]}
+              </PhoneFrame>
+            </div>
+            {scenes.map((scene, i) => (
+              <div key={i} className={`text-center transition-opacity duration-300 ${i === activeScene ? 'opacity-100' : 'opacity-30'}`}>
+                <p className="section-label mb-2">{scene.label}</p>
+                <h3 className="font-black text-white text-2xl tracking-tight mb-3">
+                  {scene.headline.join(' ')}
+                </h3>
+                <p className="text-white/50 text-sm leading-relaxed">{scene.sub}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
