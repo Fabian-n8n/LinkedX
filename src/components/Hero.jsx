@@ -288,16 +288,18 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="font-black text-white leading-[1.02] tracking-[-0.04em] mb-6"
-            style={{ fontSize: 'clamp(3rem, 6.5vw, 5.5rem)' }}
+            style={{ fontSize: 'clamp(2.6rem, 5.5vw, 4.8rem)' }}
           >
-            Grow your
-            <br />
-            <span className="relative inline-flex items-center">
+            Show up on
+            <span className="relative inline-flex items-center mx-2">
               <InBadge />
-              <span>LinkedIn.</span>
             </span>
+            LinkedIn
             <br />
-            <span className="text-white/25">While you sleep.</span>
+            every day.{' '}
+            <span className="text-white/25">Without writing</span>
+            <br />
+            <span className="text-white/25">every day.</span>
           </motion.h1>
 
           {/* Sub */}
@@ -307,7 +309,7 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.35 }}
             className="text-white/55 text-lg leading-[1.7] mb-10 max-w-[460px]"
           >
-            LinkedX auto-comments in your voice, posts trending industry content, and builds the network that opens every door — completely on autopilot.
+            AI that drafts posts in your voice, comments on the right people, and builds your network in the background.
           </motion.p>
 
           {/* CTAs */}

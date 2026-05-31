@@ -203,10 +203,6 @@ function TestimonialCarousel() {
         </button>
       </div>
 
-      {/* Paused hint */}
-      <p className="text-center text-white/20 text-xs mt-3">
-        {paused ? 'Paused — hover away to resume' : `Auto-advancing in ${Math.ceil(SLIDE_DURATION / 1000)}s`}
-      </p>
     </div>
   );
 }
