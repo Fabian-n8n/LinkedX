@@ -45,6 +45,7 @@ const roles = [
 
 export default function Waitlist() {
   const [submitted, setSubmitted] = useState(false);
+  const [welcomeEmailSent, setWelcomeEmailSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [roleMenuOpen, setRoleMenuOpen] = useState(false);
@@ -120,6 +121,7 @@ export default function Waitlist() {
         throw new Error(result.error || 'Something went wrong while saving your spot.');
       }
 
+      setWelcomeEmailSent(Boolean(result.emailSent));
       setSubmitted(true);
     } catch (error) {
       setErrorMessage(error.message || 'Something went wrong while saving your spot.');
@@ -390,7 +392,15 @@ export default function Waitlist() {
               You're on the list! 🎉
             </h2>
             <p className="text-white/50 leading-[1.7] mb-8">
-              We'll email you at <strong className="text-white">{form.email}</strong> when your access is ready. As a founding member, you'll get 50% off — permanently.
+              {welcomeEmailSent ? (
+                <>
+                  A quick welcome note is on its way to <strong className="text-white">{form.email}</strong>. We'll follow up there when your access is ready.
+                </>
+              ) : (
+                <>
+                  We'll email you at <strong className="text-white">{form.email}</strong> when your access is ready. As a founding member, you'll get 50% off — permanently.
+                </>
+              )}
             </p>
 
             <div className="glass-card-accent p-5 rounded-2xl mb-8 text-left">
