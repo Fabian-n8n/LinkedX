@@ -2,7 +2,246 @@ import { useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useMotionValueEvent, AnimatePresence } from 'framer-motion';
 
 /* ══════════════════════════════════════════════════════
-   LinkedIn Phone Screens  (light mode, fits 296×548px)
+   iOS Status-bar icons (iPhone 15 Pro style)
+══════════════════════════════════════════════════════ */
+function SignalBars() {
+  return (
+    <svg width="17" height="12" viewBox="0 0 17 12" fill="#000">
+      <rect x="0"    y="8.5" width="3" height="3.5" rx="0.9" />
+      <rect x="4.5"  y="5.5" width="3" height="6.5" rx="0.9" />
+      <rect x="9"    y="2.5" width="3" height="9.5" rx="0.9" />
+      <rect x="13.5" y="0"   width="3" height="12"  rx="0.9" opacity="0.28" />
+    </svg>
+  );
+}
+
+function WiFiWaves() {
+  return (
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+      <circle cx="8" cy="11.2" r="1.5" fill="#000" />
+      <path d="M4.4 7.8a5.1 5.1 0 0 1 7.2 0"
+        stroke="#000" strokeWidth="1.45" strokeLinecap="round" />
+      <path d="M1.2 4.8A9.9 9.9 0 0 1 14.8 4.8"
+        stroke="#000" strokeWidth="1.45" strokeLinecap="round" opacity="0.45" />
+    </svg>
+  );
+}
+
+function BatteryIcon() {
+  return (
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none">
+      {/* Shell */}
+      <rect x="0.5" y="0.5" width="23" height="12" rx="3.5"
+        stroke="#000" strokeOpacity="0.35" strokeWidth="1" />
+      {/* Fill ~75% */}
+      <rect x="2" y="2" width="16.5" height="9" rx="2" fill="#000" />
+      {/* Terminal nub */}
+      <path d="M24.5 4.5v4a2.3 1.9 0 0 0 0-4z" fill="#000" fillOpacity="0.42" />
+    </svg>
+  );
+}
+
+/* ══════════════════════════════════════════════════════
+   Realistic iPhone 15 Pro frame
+   ─ Black Titanium chassis  ─ Dynamic Island  ─ Status bar
+══════════════════════════════════════════════════════ */
+function PhoneFrame({ children }) {
+  return (
+    <div className="relative" style={{ width: 300 }}>
+      {/* Ambient blue glow behind the phone */}
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          inset: '-40px',
+          background:
+            'radial-gradient(ellipse at 50% 55%, rgba(10,102,194,0.28) 0%, transparent 65%)',
+          borderRadius: '50%',
+          zIndex: 0,
+        }}
+      />
+
+      {/* ── Outer titanium chassis ────────────────────────────── */}
+      <div
+        style={{
+          width: 300,
+          height: 612,
+          borderRadius: 54,
+          position: 'relative',
+          zIndex: 1,
+          /* Black Titanium gradient — subtle directional sheen */
+          background:
+            'linear-gradient(158deg, #4A4744 0%, #302D2B 30%, #1A1816 60%, #272422 100%)',
+          boxShadow: [
+            '0 60px 120px rgba(0,0,0,0.92)',           /* deep drop shadow   */
+            '0 0 0 0.6px rgba(255,255,255,0.22)',       /* outer bright edge  */
+            'inset 0 0 0 0.6px rgba(255,255,255,0.07)', /* inner subtle rim   */
+          ].join(', '),
+        }}
+      >
+        {/* Directional titanium sheen overlay */}
+        <div
+          style={{
+            position: 'absolute', inset: 0, borderRadius: 54,
+            pointerEvents: 'none', zIndex: 2,
+            background:
+              'linear-gradient(155deg, rgba(255,255,255,0.11) 0%, transparent 38%, transparent 62%, rgba(255,255,255,0.06) 100%)',
+          }}
+        />
+
+        {/* ── Screen glass (inset 9 px all around) ─────────────── */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 9, left: 9, right: 9, bottom: 9,
+            borderRadius: 46,
+            overflow: 'hidden',
+            background: '#fff',
+            /* faint screen-glass rim */
+            boxShadow: 'inset 0 0 0 0.5px rgba(0,0,0,0.14)',
+            zIndex: 3,
+          }}
+        >
+          {/* ── iOS Status bar (44 px) ──────────────────────────── */}
+          <div
+            style={{
+              position: 'absolute',
+              top: 0, left: 0, right: 0,
+              height: 44,
+              zIndex: 20,
+              display: 'flex',
+              alignItems: 'flex-end',
+              paddingBottom: 7,
+              paddingLeft: 20,
+              paddingRight: 15,
+              background: '#fff',         /* matches LinkedIn white headers */
+              pointerEvents: 'none',
+            }}
+          >
+            {/* Time — bottom-left */}
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 760,
+                letterSpacing: '-0.025em',
+                color: '#000',
+                lineHeight: 1,
+                flex: 1,
+                fontFamily: 'system-ui, -apple-system, sans-serif',
+              }}
+            >
+              9:41
+            </span>
+
+            {/* Dynamic Island (pill notch) */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 9,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: 90,
+                height: 26,
+                background: '#000',
+                borderRadius: 20,
+                zIndex: 5,
+                boxShadow: '0 0 0 1.5px rgba(0,0,0,0.5)',
+              }}
+            />
+
+            {/* Right — signal + wifi + battery */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+              <SignalBars />
+              <WiFiWaves />
+              <BatteryIcon />
+            </div>
+          </div>
+
+          {/* ── Screen content (below status bar) ─────────────── */}
+          <div
+            style={{
+              position: 'absolute',
+              top: 44, left: 0, right: 0, bottom: 0,
+            }}
+          >
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={children?.key ?? 0}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.35, ease: 'easeInOut' }}
+                style={{ height: '100%' }}
+              >
+                {children}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Home indicator bar (bottom) */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 6,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: 100,
+              height: 4,
+              background: 'rgba(0,0,0,0.18)',
+              borderRadius: 2,
+              zIndex: 10,
+              pointerEvents: 'none',
+            }}
+          />
+        </div>
+
+        {/* ── Physical buttons ───────────────────────────────── */}
+
+        {/* Action button (left, above volume) */}
+        <div style={{
+          position: 'absolute', left: -4.5, top: 74,
+          width: 4, height: 22,
+          background: 'linear-gradient(90deg, #181614, #3E3B38)',
+          borderRadius: '3px 0 0 3px',
+          boxShadow: 'inset -1px 0 0 rgba(255,255,255,0.08)',
+          zIndex: 4,
+        }} />
+
+        {/* Volume up */}
+        <div style={{
+          position: 'absolute', left: -4.5, top: 114,
+          width: 4, height: 36,
+          background: 'linear-gradient(90deg, #181614, #3E3B38)',
+          borderRadius: '3px 0 0 3px',
+          boxShadow: 'inset -1px 0 0 rgba(255,255,255,0.08)',
+          zIndex: 4,
+        }} />
+
+        {/* Volume down */}
+        <div style={{
+          position: 'absolute', left: -4.5, top: 160,
+          width: 4, height: 36,
+          background: 'linear-gradient(90deg, #181614, #3E3B38)',
+          borderRadius: '3px 0 0 3px',
+          boxShadow: 'inset -1px 0 0 rgba(255,255,255,0.08)',
+          zIndex: 4,
+        }} />
+
+        {/* Power / side button (right) */}
+        <div style={{
+          position: 'absolute', right: -4.5, top: 128,
+          width: 4, height: 56,
+          background: 'linear-gradient(270deg, #181614, #3E3B38)',
+          borderRadius: '0 3px 3px 0',
+          boxShadow: 'inset 1px 0 0 rgba(255,255,255,0.08)',
+          zIndex: 4,
+        }} />
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════
+   LinkedIn Phone Screens  (light mode, fits 282 × 559 px)
 ══════════════════════════════════════════════════════ */
 
 /* Screen 1 — Notifications list */
@@ -140,7 +379,7 @@ function ScreenRecruiter() {
           </div>
         </div>
 
-        {/* Message bubbles area */}
+        {/* Message bubbles */}
         <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 8 }}>
           <div style={{ alignSelf: 'flex-start', maxWidth: '85%' }}>
             <div style={{ background: '#fff', borderRadius: '0 12px 12px 12px', padding: '8px 10px', boxShadow: '0 1px 3px rgba(0,0,0,0.08)', border: '1px solid rgba(0,0,0,0.06)' }}>
@@ -159,7 +398,7 @@ function ScreenRecruiter() {
 
           {/* Typing indicator */}
           <div style={{ alignSelf: 'flex-start', display: 'flex', gap: 4, padding: '8px 12px', background: '#fff', borderRadius: '0 12px 12px 12px', border: '1px solid rgba(0,0,0,0.06)' }}>
-            {[0,1,2].map(i => (
+            {[0, 1, 2].map(i => (
               <motion.div key={i} animate={{ y: [0, -4, 0] }} transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.15 }}
                 style={{ width: 5, height: 5, borderRadius: '50%', background: '#999' }} />
             ))}
@@ -307,7 +546,8 @@ function SceneText({ scene, align }) {
           </span>
         ))}
       </h3>
-      <p className="text-white/50 text-sm leading-[1.8] mb-6 max-w-[320px]" style={{ marginLeft: align === 'right' ? 'auto' : 0 }}>
+      <p className="text-white/50 text-sm leading-[1.8] mb-6 max-w-[320px]"
+        style={{ marginLeft: align === 'right' ? 'auto' : 0 }}>
         {scene.sub}
       </p>
       <div
@@ -318,55 +558,6 @@ function SceneText({ scene, align }) {
           {scene.stat.value}
         </span>
         <span className="text-white/35 text-sm">{scene.stat.label}</span>
-      </div>
-    </div>
-  );
-}
-
-/* ── Large phone frame ───────────────────────────────────────────────────── */
-function PhoneFrame({ children }) {
-  return (
-    <div className="relative" style={{ width: 300 }}>
-      {/* Glow */}
-      <div
-        className="absolute pointer-events-none"
-        style={{ inset: '-30px', background: 'radial-gradient(ellipse at center, rgba(10,102,194,0.25) 0%, transparent 70%)', borderRadius: '50%' }}
-      />
-      {/* Body */}
-      <div
-        style={{
-          width: 300,
-          height: 600,
-          background: '#0E0E12',
-          borderRadius: 44,
-          border: '7px solid #1E1E26',
-          boxShadow: '0 40px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.07), inset 0 0 0 1px rgba(255,255,255,0.03)',
-          overflow: 'hidden',
-          position: 'relative',
-        }}
-      >
-        {/* Dynamic island */}
-        <div style={{ position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)', width: 110, height: 28, background: '#0E0E12', borderRadius: 20, zIndex: 10 }} />
-        {/* Side buttons */}
-        <div style={{ position: 'absolute', left: -9, top: 100, width: 4, height: 32, background: '#2A2A35', borderRadius: '2px 0 0 2px' }} />
-        <div style={{ position: 'absolute', left: -9, top: 142, width: 4, height: 32, background: '#2A2A35', borderRadius: '2px 0 0 2px' }} />
-        <div style={{ position: 'absolute', right: -9, top: 120, width: 4, height: 50, background: '#2A2A35', borderRadius: '0 2px 2px 0' }} />
-
-        {/* Screen — padded for dynamic island */}
-        <div style={{ position: 'absolute', top: 44, left: 0, right: 0, bottom: 0 }}>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={children?.key ?? 0}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.35, ease: 'easeInOut' }}
-              style={{ height: '100%' }}
-            >
-              {children}
-            </motion.div>
-          </AnimatePresence>
-        </div>
       </div>
     </div>
   );
@@ -394,9 +585,6 @@ export default function ScrollStory() {
   const s3Op = useTransform(scrollYProgress, [0.75, 0.79, 0.96, 1], [0, 1, 1, 0]);
   const s3X  = useTransform(scrollYProgress, [0.75, 0.79], [28, 0]);
 
-  const sceneOpacities = [s0Op, s1Op, s2Op, s3Op];
-  const sceneXs = [s0X, s1X, s2X, s3X];
-
   /* Progress dots */
   const dot0 = useTransform(scrollYProgress, [0, 0.25], [0, 1]);
   const dot1 = useTransform(scrollYProgress, [0.25, 0.5], [0, 1]);
@@ -420,7 +608,7 @@ export default function ScrollStory() {
             style={{ gridTemplateColumns: '1fr 300px 1fr', gap: '56px' }}
           >
             {/* ── LEFT column ─────────────────────────────── */}
-            <div className="relative" style={{ height: 380 }}>
+            <div className="relative" style={{ height: 420 }}>
               {/* Scene 0 (left) */}
               <motion.div style={{ opacity: s0Op, x: s0X, position: 'absolute', inset: 0, display: 'flex', alignItems: 'center' }}>
                 <SceneText scene={scenes[0]} align="left" />
@@ -432,15 +620,16 @@ export default function ScrollStory() {
             </div>
 
             {/* ── CENTER: Phone ────────────────────────────── */}
-            <div className="flex flex-col items-center gap-6">
-              <PhoneFrame key={activeScene}>
+            <div className="flex flex-col items-center gap-5">
+              <PhoneFrame>
                 {phoneScreens[activeScene]}
               </PhoneFrame>
 
               {/* Progress dots */}
               <div className="flex items-center gap-2">
                 {scenes.map((_, i) => (
-                  <div key={i} className="relative h-1 rounded-full overflow-hidden" style={{ width: i === activeScene ? 28 : 12, background: 'rgba(255,255,255,0.12)', transition: 'width 0.3s ease' }}>
+                  <div key={i} className="relative h-1 rounded-full overflow-hidden"
+                    style={{ width: i === activeScene ? 28 : 12, background: 'rgba(255,255,255,0.12)', transition: 'width 0.3s ease' }}>
                     {i === activeScene && (
                       <motion.div
                         key={activeScene}
@@ -454,7 +643,7 @@ export default function ScrollStory() {
             </div>
 
             {/* ── RIGHT column ─────────────────────────────── */}
-            <div className="relative" style={{ height: 380 }}>
+            <div className="relative" style={{ height: 420 }}>
               {/* Scene 1 (right) */}
               <motion.div style={{ opacity: s1Op, x: s1X, position: 'absolute', inset: 0, display: 'flex', alignItems: 'center' }}>
                 <SceneText scene={scenes[1]} align="right" />
@@ -469,7 +658,7 @@ export default function ScrollStory() {
           {/* ── Mobile fallback: stacked ─────────────────────────────── */}
           <div className="lg:hidden flex flex-col items-center gap-12">
             <div className="flex justify-center">
-              <PhoneFrame key={activeScene}>
+              <PhoneFrame>
                 {phoneScreens[activeScene]}
               </PhoneFrame>
             </div>
