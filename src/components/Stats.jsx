@@ -55,7 +55,7 @@ function StatCard({ stat, inView }) {
     <div className="text-center">
       <div
         className="font-black text-white tracking-[-0.04em] leading-none mb-3"
-        style={{ fontSize: 'clamp(3rem, 5vw, 4.5rem)' }}
+        style={{ fontSize: 'clamp(2.1rem, 7vw, 4.5rem)' }}
       >
         <span className="text-gradient-accent">{count.toLocaleString()}</span>
         <span className="text-[#1E86D4]">{stat.suffix}</span>
@@ -118,7 +118,7 @@ function TestimonialCarousel() {
             animate="center"
             exit="exit"
             transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="glass-card-accent p-8 rounded-2xl text-center relative"
+            className="glass-card-accent p-5 sm:p-8 rounded-2xl text-center relative"
           >
             {/* Large decorative quote mark */}
             <Quote
@@ -241,7 +241,7 @@ export default function Stats() {
         {/* Stat numbers */}
         <div
           ref={ref}
-          className="grid grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-10 lg:gap-8"
         >
           {stats.map((stat, i) => (
             <motion.div

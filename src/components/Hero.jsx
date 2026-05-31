@@ -387,7 +387,7 @@ export default function Hero() {
           initial={{ opacity: 0, x: 32 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="relative flex justify-center lg:justify-end"
+          className="relative hidden lg:flex justify-center lg:justify-end"
         >
           {/* Subtle glow behind cards */}
           <div className="absolute inset-0 bg-[#0A66C2]/08 blur-3xl rounded-full pointer-events-none" />
