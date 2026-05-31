@@ -112,7 +112,10 @@ LinkedX`;
 async function sendWelcomeEmail({ name, email, role, recordId }) {
   if (!process.env.RESEND_API_KEY) {
     console.error('LinkedX welcome email skipped: RESEND_API_KEY is missing.');
-    return false;
+    return {
+      sent: false,
+      note: 'Welcome email not sent: RESEND_API_KEY is missing in Vercel.',
+    };
   }
 
   const { html, text } = buildWelcomeEmail({ name, role });
@@ -142,10 +145,42 @@ async function sendWelcomeEmail({ name, email, role, recordId }) {
   if (!resendResponse.ok) {
     const errorText = await resendResponse.text();
     console.error('LinkedX welcome email failed:', errorText);
-    return false;
+
+    const needsVerifiedDomain = errorText.includes('verify a domain');
+
+    return {
+      sent: false,
+      note: needsVerifiedDomain
+        ? 'Welcome email not sent: Resend requires a verified sending domain before emailing this recipient.'
+        : 'Welcome email not sent: Resend rejected the send request. Check Vercel logs for details.',
+    };
   }
 
-  return true;
+  return { sent: true, note: '' };
+}
+
+async function updateWaitlistNotes({ recordId, note }) {
+  if (!recordId || !note) {
+    return;
+  }
+
+  const noteResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}/${recordId}`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${process.env.AIRTABLE_API_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      fields: {
+        Notes: note,
+      },
+    }),
+  });
+
+  if (!noteResponse.ok) {
+    const errorText = await noteResponse.text();
+    console.error('Airtable waitlist note update failed:', errorText);
+  }
 }
 
 export default async function handler(req, res) {
@@ -210,12 +245,19 @@ export default async function handler(req, res) {
   }
 
   const airtableRecord = await airtableResponse.json().catch(() => ({}));
-  const emailSent = await sendWelcomeEmail({
+  const emailResult = await sendWelcomeEmail({
     name,
     email,
     role,
     recordId: airtableRecord.id,
   });
 
-  return res.status(201).json({ ok: true, emailSent });
+  if (!emailResult.sent) {
+    await updateWaitlistNotes({
+      recordId: airtableRecord.id,
+      note: emailResult.note,
+    });
+  }
+
+  return res.status(201).json({ ok: true, emailSent: emailResult.sent });
 }
