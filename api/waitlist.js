@@ -53,7 +53,8 @@ export default async function handler(req, res) {
   }
 
   if (!process.env.AIRTABLE_API_TOKEN) {
-    return res.status(500).json({ error: 'Server configuration is incomplete.' });
+    console.error('Airtable waitlist insert failed: AIRTABLE_API_TOKEN is missing.');
+    return res.status(500).json({ error: 'Unable to save your waitlist entry right now.' });
   }
 
   const payload = parseJsonBody(req.body);

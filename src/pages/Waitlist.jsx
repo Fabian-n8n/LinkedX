@@ -18,13 +18,28 @@ import {
 
 const roles = [
   'Founder / CEO',
+  'Co-Founder',
+  'Startup Operator',
   'Product Manager',
   'Engineer / Developer',
   'Designer',
+  'UX Researcher',
+  'Marketing Lead',
+  'Growth Marketer',
   'Sales / BD',
+  'Account Executive',
+  'Customer Success',
   'Recruiter',
+  'HR / People Ops',
   'Content Creator',
+  'Creator Founder',
+  'Consultant',
+  'Coach',
+  'Agency Owner',
+  'Investor',
+  'Freelancer',
   'Job Seeker',
+  'Student',
   'Other',
 ];
 
@@ -171,7 +186,7 @@ export default function Waitlist() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.15 }}
               onSubmit={handleSubmit}
-              className="glass-card p-8 flex flex-col gap-5"
+              className="glass-card overflow-visible p-8 flex flex-col gap-5"
             >
               {errorMessage ? (
                 <div className="flex items-start gap-3 rounded-2xl border border-red-400/20 bg-red-500/[0.08] px-4 py-3 text-sm text-red-100">
@@ -277,12 +292,12 @@ export default function Waitlist() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 8, scale: 0.98 }}
                         transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                        className="absolute left-0 right-0 top-[calc(100%+0.75rem)] z-20 overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0B0F1A]/95 p-2 shadow-[0_24px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl"
+                        className="absolute left-0 right-0 top-[calc(100%+0.75rem)] z-30 overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0B0F1A]/95 p-2 shadow-[0_24px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl"
                       >
                         <div className="mb-2 px-3 pt-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/30">
                           Choose your role
                         </div>
-                        <div className="space-y-1">
+                        <div className="max-h-80 space-y-1 overflow-y-auto overscroll-contain pr-1">
                           {roles.map((role) => {
                             const active = form.role === role;
 
