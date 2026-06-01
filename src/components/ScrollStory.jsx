@@ -213,7 +213,7 @@ function PhoneFrame({ children, scale = 1 }) {
 
 function ScreenNotifications() {
   const items = [
-    { avatar: 'AP', bg: '#4f46e5', name: 'Alexandru Pricopie', text: 'follows you and is inviting you to connect', time: '2m', dot: true },
+    { avatar: 'AP', bg: '#4f46e5', name: 'Alexandru Pricopie', text: 'wants to connect with you', time: '2m', dot: true },
     { avatar: 'FL', bg: '#0A66C2', name: 'Felix Lee', text: 'mentioned you in a comment with 16 reactions', time: '2h', dot: false },
     { avatar: 'MP', bg: '#065f46', name: 'MAJI PETER', text: 'and 1 other liked your comment', time: '49m', dot: false },
     { avatar: 'KA', bg: '#b91c1c', name: 'Kiran Aftab', text: 'and 2,896 others reacted to your post', time: '49m', dot: false },
@@ -240,9 +240,11 @@ function ScreenNotifications() {
           <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 9, padding: '9px 14px', borderBottom: '1px solid rgba(0,0,0,0.05)', background: n.dot ? 'rgba(10,102,194,0.05)' : '#fff' }}>
             <div style={{ width: 34, height: 34, borderRadius: '50%', flexShrink: 0, background: n.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 800, color: '#fff' }}>{n.avatar}</div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <span style={{ fontSize: 9.5, fontWeight: 700, color: '#000' }}>{n.name} </span>
-              <span style={{ fontSize: 9.5, color: '#333', lineHeight: 1.4 }}>{n.text}</span>
-              <div style={{ fontSize: 8.5, color: '#0A66C2', marginTop: 2 }}>{n.time} ago</div>
+              <p style={{ fontSize: 9.5, color: '#333', lineHeight: 1.45, margin: '0 0 2px' }}>
+                <span style={{ fontWeight: 700, color: '#000' }}>{n.name}</span>
+                {' '}{n.text}
+              </p>
+              <div style={{ fontSize: 8.5, color: '#0A66C2' }}>{n.time} ago</div>
             </div>
             {n.dot && <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#0A66C2', flexShrink: 0, marginTop: 5 }} />}
           </div>
@@ -624,7 +626,7 @@ function DesktopScrollStory() {
             {/* 3-column grid: left text | phone | right text */}
             <div
               className="grid items-center"
-              style={{ gridTemplateColumns: 'minmax(0, 1fr) 390px minmax(0, 1fr)', gap: '56px' }}
+              style={{ gridTemplateColumns: 'minmax(0, 1fr) 520px minmax(0, 1fr)', gap: '56px' }}
             >
               {/* LEFT column */}
               <div className="relative" style={{ height: 540 }}>
@@ -638,7 +640,7 @@ function DesktopScrollStory() {
 
               {/* CENTER: Phone */}
               <div className="flex flex-col items-center gap-5">
-                <PhoneFrame scale={1.22}>
+                <PhoneFrame scale={1.7}>
                   {phoneScreens[activeScene]}
                 </PhoneFrame>
 

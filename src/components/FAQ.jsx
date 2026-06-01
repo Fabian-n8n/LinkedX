@@ -15,7 +15,7 @@ const faqs = [
   {
     question: 'Will this get my LinkedIn account banned?',
     answer:
-      "No. We use Unipile, the same API that compliant LinkedIn tools like Lemlist and HeyReach use. We also throttle activity to mimic human behavior, comment in small batches with realistic timing, and never spam. Your account is safer with us than with most browser extensions you've probably tried.",
+      "No. We built this specifically to behave like a real person organically using LinkedIn every day. Comments go out in small batches with natural timing gaps — never in bulk, never spamming. Everything looks like genuine manual engagement, because to LinkedIn, that's exactly what it is. Your account stays completely safe.",
   },
   {
     question: 'Does it actually sound like me, or like a bot?',
