@@ -6,6 +6,7 @@ import Features from '@/components/Features';
 import Stats from '@/components/Stats';
 import HowItWorks from '@/components/HowItWorks';
 import Pricing from '@/components/Pricing';
+import FAQ from '@/components/FAQ';
 import FooterCTA from '@/components/FooterCTA';
 import Footer from '@/components/Footer';
 
@@ -20,6 +21,7 @@ export default function Home() {
       <Stats />
       <HowItWorks />
       <Pricing />
+      <FAQ />
       <FooterCTA />
       <Footer />
     </div>
