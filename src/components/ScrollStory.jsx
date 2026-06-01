@@ -638,8 +638,8 @@ function DesktopScrollStory() {
                 </motion.div>
               </div>
 
-              {/* CENTER: Phone */}
-              <div className="flex flex-col items-center gap-5">
+              {/* CENTER: Phone — shifted down so top of screen is prominent */}
+              <div className="flex flex-col items-center gap-5" style={{ transform: 'translateY(140px)' }}>
                 <PhoneFrame scale={1.7}>
                   {phoneScreens[activeScene]}
                 </PhoneFrame>
