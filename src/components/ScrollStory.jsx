@@ -5,7 +5,7 @@
  *   • MobileScrollStory  (< lg / < 1024 px) — auto-cycling phone + animated scene text
  *   • DesktopScrollStory (≥ lg / ≥ 1024 px) — 400 vh sticky scroll, unchanged
  *
- * Desktop view is 100 % preserved.  Mobile view has zero sticky-scroll mechanics.
+ * Mobile view has zero sticky-scroll mechanics.
  */
 
 import { useRef, useState, useEffect } from 'react';
@@ -57,9 +57,16 @@ function BatteryIcon() {
 /* ══════════════════════════════════════════════════════
    Realistic iPhone 15 Pro frame
 ══════════════════════════════════════════════════════ */
-function PhoneFrame({ children }) {
+function PhoneFrame({ children, scale = 1 }) {
+  const phoneWidth = 300;
+  const phoneHeight = 612;
+
   return (
-    <div className="relative" style={{ width: 300 }}>
+    <div
+      className="relative"
+      style={{ width: phoneWidth * scale, height: phoneHeight * scale }}
+    >
+      <div style={{ width: phoneWidth, transform: `scale(${scale})`, transformOrigin: 'top left' }}>
       {/* Ambient blue glow */}
       <div
         className="absolute pointer-events-none"
@@ -194,6 +201,7 @@ function PhoneFrame({ children }) {
           boxShadow: 'inset 1px 0 0 rgba(255,255,255,0.08)',
           zIndex: 4,
         }} />
+      </div>
       </div>
     </div>
   );
@@ -460,15 +468,15 @@ function MobileScrollStory() {
   const scene = scenes[active];
 
   return (
-    <section className="lg:hidden py-16 px-5 bg-[#07080F] relative overflow-hidden">
+    <section className="lg:hidden py-20 px-5 bg-[#07080F] relative overflow-hidden">
       {/* Background glow */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-[#0A66C2]/10 blur-3xl rounded-full" />
       </div>
 
-      {/* Phone — centered, full 300 px width (fits 320 px+ screens) */}
-      <div className="flex justify-center mb-6 relative z-10">
-        <PhoneFrame>{phoneScreens[active]}</PhoneFrame>
+      {/* Phone — centered and intentionally oversized for the outcome story. */}
+      <div className="flex justify-center mb-8 relative z-10">
+        <PhoneFrame scale={1.05}>{phoneScreens[active]}</PhoneFrame>
       </div>
 
       {/* Scene indicator dots */}
@@ -488,7 +496,7 @@ function MobileScrollStory() {
       </div>
 
       {/* Animated scene text */}
-      <div className="relative z-10 max-w-xs mx-auto text-center" style={{ minHeight: 230 }}>
+      <div className="relative z-10 max-w-sm mx-auto text-center" style={{ minHeight: 270 }}>
         <AnimatePresence mode="wait">
           <motion.div
             key={active}
@@ -500,8 +508,8 @@ function MobileScrollStory() {
             <p className="section-label mb-3">{scene.label}</p>
 
             <h3
-              className="font-black text-white leading-[1.06] tracking-[-0.035em] mb-4"
-              style={{ fontSize: 'clamp(1.5rem, 6vw, 1.9rem)' }}
+              className="font-black text-white leading-[0.98] tracking-[-0.04em] mb-5"
+              style={{ fontSize: 'clamp(2.25rem, 10vw, 3.25rem)' }}
             >
               {scene.headline.map((line, i) => (
                 <span key={i}>
@@ -513,18 +521,18 @@ function MobileScrollStory() {
               ))}
             </h3>
 
-            <p className="text-white/45 text-sm leading-[1.75] mb-5 px-2">
+            <p className="text-white/50 text-base leading-[1.75] mb-6 px-1">
               {scene.sub}
             </p>
 
             <div className="flex items-baseline justify-center gap-2">
               <span
                 className="font-black text-[#1E86D4] tracking-[-0.03em]"
-                style={{ fontSize: '1.9rem' }}
+                style={{ fontSize: '2.8rem' }}
               >
                 {scene.stat.value}
               </span>
-              <span className="text-white/35 text-sm">{scene.stat.label}</span>
+              <span className="text-white/40 text-base">{scene.stat.label}</span>
             </div>
           </motion.div>
         </AnimatePresence>
@@ -535,17 +543,17 @@ function MobileScrollStory() {
 
 /* ══════════════════════════════════════════════════════════════════════════
    DESKTOP render tree  (hidden lg:block)
-   — Identical to the original 400 vh sticky scroll.  Zero changes inside.
+   — 400 vh sticky scroll with oversized outcome text and phone visuals.
 ══════════════════════════════════════════════════════════════════════════ */
 
 /* Scene text block — desktop only */
 function SceneText({ scene, align }) {
   return (
     <div className={align === 'right' ? 'text-right' : 'text-left'}>
-      <p className="section-label mb-3">{scene.label}</p>
+      <p className="section-label mb-5">{scene.label}</p>
       <h3
-        className="font-black text-white leading-[1.05] tracking-[-0.04em] mb-5"
-        style={{ fontSize: 'clamp(1.6rem, 2.8vw, 2.4rem)' }}
+        className="font-black text-white leading-[0.98] tracking-[-0.045em] mb-7"
+        style={{ fontSize: 'clamp(3rem, 4.7vw, 5rem)' }}
       >
         {scene.headline.map((line, i) => (
           <span key={i}>
@@ -557,7 +565,7 @@ function SceneText({ scene, align }) {
         ))}
       </h3>
       <p
-        className="text-white/50 text-sm leading-[1.8] mb-6 max-w-[320px]"
+        className="text-white/55 text-lg leading-[1.75] mb-8 max-w-[520px]"
         style={{ marginLeft: align === 'right' ? 'auto' : 0 }}
       >
         {scene.sub}
@@ -566,10 +574,10 @@ function SceneText({ scene, align }) {
         className="inline-flex items-baseline gap-2"
         style={{ justifyContent: align === 'right' ? 'flex-end' : 'flex-start' }}
       >
-        <span className="font-black text-[#1E86D4] tracking-[-0.03em]" style={{ fontSize: '2rem' }}>
+        <span className="font-black text-[#1E86D4] tracking-[-0.035em]" style={{ fontSize: '4rem', lineHeight: 1 }}>
           {scene.stat.value}
         </span>
-        <span className="text-white/35 text-sm">{scene.stat.label}</span>
+        <span className="text-white/40 text-base">{scene.stat.label}</span>
       </div>
     </div>
   );
@@ -605,21 +613,21 @@ function DesktopScrollStory() {
     /* hidden on mobile — only enters layout on lg (1024 px +) */
     <div className="hidden lg:block">
       <section ref={ref} style={{ height: '400vh' }} className="relative">
-        <div className="sticky top-0 h-screen overflow-hidden flex items-center bg-[#07080F]">
+        <div className="sticky top-0 h-screen overflow-hidden flex items-center bg-[#07080F] py-3">
 
           {/* Background glow */}
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] bg-[#0A66C2]/08 blur-3xl rounded-full" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[600px] bg-[#0A66C2]/10 blur-3xl rounded-full" />
           </div>
 
-          <div className="w-full max-w-7xl mx-auto px-6">
+          <div className="w-full max-w-[1500px] mx-auto px-8">
             {/* 3-column grid: left text | phone | right text */}
             <div
               className="grid items-center"
-              style={{ gridTemplateColumns: '1fr 300px 1fr', gap: '56px' }}
+              style={{ gridTemplateColumns: 'minmax(0, 1fr) 390px minmax(0, 1fr)', gap: '56px' }}
             >
               {/* LEFT column */}
-              <div className="relative" style={{ height: 420 }}>
+              <div className="relative" style={{ height: 540 }}>
                 <motion.div style={{ opacity: s0Op, x: s0X, position: 'absolute', inset: 0, display: 'flex', alignItems: 'center' }}>
                   <SceneText scene={scenes[0]} align="left" />
                 </motion.div>
@@ -630,7 +638,7 @@ function DesktopScrollStory() {
 
               {/* CENTER: Phone */}
               <div className="flex flex-col items-center gap-5">
-                <PhoneFrame>
+                <PhoneFrame scale={1.22}>
                   {phoneScreens[activeScene]}
                 </PhoneFrame>
 
@@ -659,7 +667,7 @@ function DesktopScrollStory() {
               </div>
 
               {/* RIGHT column */}
-              <div className="relative" style={{ height: 420 }}>
+              <div className="relative" style={{ height: 540 }}>
                 <motion.div style={{ opacity: s1Op, x: s1X, position: 'absolute', inset: 0, display: 'flex', alignItems: 'center' }}>
                   <SceneText scene={scenes[1]} align="right" />
                 </motion.div>

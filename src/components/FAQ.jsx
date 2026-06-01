@@ -45,7 +45,7 @@ const faqs = [
   {
     question: 'What happens during the free trial?',
     answer:
-      'Full access to everything in the plan you picked, no credit card needed to start. After 14 days, you decide if you want to keep going. No surprise charges, no auto-billing tricks.',
+      'Full access to everything in the plan you picked, no credit card needed to start. After 30 days, you decide if you want to keep going. No surprise charges, no auto-billing tricks.',
   },
   {
     question: 'Why is this priced lower than tools like Taplio?',
@@ -91,7 +91,7 @@ export default function FAQ() {
             Questions you probably have.
           </h2>
           <p className="section-subtext mx-auto text-center">
-            If anything's missing, just message us.
+            A quick pass through the questions people usually ask before joining.
           </p>
         </motion.div>
 
@@ -149,21 +149,6 @@ export default function FAQ() {
               </div>
             );
           })}
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.5, delay: 0.15 }}
-          className="mt-12 text-center"
-        >
-          <p className="mb-5 text-lg font-semibold text-white">
-            Still curious? Message me directly.
-          </p>
-          <a href="mailto:fabianwong1995@gmail.com" className="btn-primary">
-            Talk to me
-          </a>
         </motion.div>
       </div>
     </section>

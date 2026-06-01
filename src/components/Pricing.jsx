@@ -32,8 +32,9 @@ function FeaturePill({ icon: Icon, title, sub, featured }) {
 const plans = [
   {
     name: 'Starter',
-    price: '$49',
+    price: '$39',
     period: '/mo',
+    founderPrice: 'First 100 users: $19.50/mo for Starter',
     commentRate: '20 comments / day',
     desc: 'For creators ready to start growing their audience on LinkedIn.',
     cta: 'Get Started',
@@ -57,6 +58,7 @@ const plans = [
     name: 'Growth',
     price: '$97',
     period: '/mo',
+    founderPrice: 'First 100 users: $48.50/mo for Growth',
     commentRate: 'Unlimited comments',
     desc: 'The fastest way to build a qualified audience and attract real opportunities on LinkedIn.',
     cta: 'Get Growth',
@@ -110,7 +112,7 @@ export default function Pricing() {
             <span className="muted">pricing.</span>
           </h2>
           <p className="section-subtext mx-auto text-center mb-6">
-            Start free during beta. Lock in your founding rate before we launch publicly.
+            30-day free trial. First 100 users get 50% off, forever.
           </p>
 
           {/* Beta badge */}
@@ -159,6 +161,9 @@ export default function Pricing() {
                     {plan.price}
                   </span>
                   <span className="text-white/40 text-sm mb-2">{plan.period}</span>
+                </div>
+                <div className="text-[#60b4f8] text-sm font-semibold mb-2">
+                  {plan.founderPrice}
                 </div>
                 <div
                   className="text-xs font-semibold mb-3"
@@ -220,7 +225,7 @@ export default function Pricing() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="text-center text-white/30 text-sm mt-10"
         >
-          ✓ Cancel anytime &nbsp;·&nbsp; ✓ No contracts &nbsp;·&nbsp; ✓ 14-day free trial at launch
+          ✓ Cancel anytime &nbsp;·&nbsp; ✓ No contracts &nbsp;·&nbsp; ✓ 30-day free trial · No credit card required
         </motion.p>
       </div>
     </section>
