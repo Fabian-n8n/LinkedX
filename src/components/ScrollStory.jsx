@@ -552,10 +552,10 @@ function MobileScrollStory() {
 function SceneText({ scene, align }) {
   return (
     <div className={align === 'right' ? 'text-right' : 'text-left'}>
-      <p className="section-label mb-5">{scene.label}</p>
+      <p className="section-label mb-4">{scene.label}</p>
       <h3
-        className="font-black text-white leading-[0.98] tracking-[-0.045em] mb-7"
-        style={{ fontSize: 'clamp(3rem, 4.7vw, 5rem)' }}
+        className="font-black text-white leading-[0.98] tracking-[-0.045em] mb-5"
+        style={{ fontSize: 'clamp(2.2rem, 3.2vw, 4rem)' }}
       >
         {scene.headline.map((line, i) => (
           <span key={i}>
@@ -567,7 +567,7 @@ function SceneText({ scene, align }) {
         ))}
       </h3>
       <p
-        className="text-white/55 text-lg leading-[1.75] mb-8 max-w-[520px]"
+        className="text-white/55 text-base leading-[1.75] mb-6 max-w-[380px]"
         style={{ marginLeft: align === 'right' ? 'auto' : 0 }}
       >
         {scene.sub}
@@ -576,10 +576,10 @@ function SceneText({ scene, align }) {
         className="inline-flex items-baseline gap-2"
         style={{ justifyContent: align === 'right' ? 'flex-end' : 'flex-start' }}
       >
-        <span className="font-black text-[#1E86D4] tracking-[-0.035em]" style={{ fontSize: '4rem', lineHeight: 1 }}>
+        <span className="font-black text-[#1E86D4] tracking-[-0.035em]" style={{ fontSize: '3rem', lineHeight: 1 }}>
           {scene.stat.value}
         </span>
-        <span className="text-white/40 text-base">{scene.stat.label}</span>
+        <span className="text-white/40 text-sm">{scene.stat.label}</span>
       </div>
     </div>
   );
@@ -615,21 +615,21 @@ function DesktopScrollStory() {
     /* hidden on mobile — only enters layout on lg (1024 px +) */
     <div className="hidden lg:block">
       <section ref={ref} style={{ height: '400vh' }} className="relative">
-        <div className="sticky top-0 h-screen overflow-hidden flex items-center bg-[#07080F] py-3">
+        <div className="sticky top-0 h-screen overflow-hidden flex items-center bg-[#07080F]">
 
           {/* Background glow */}
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[600px] bg-[#0A66C2]/10 blur-3xl rounded-full" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] bg-[#0A66C2]/10 blur-3xl rounded-full" />
           </div>
 
-          <div className="w-full max-w-[1500px] mx-auto px-8">
+          <div className="w-full max-w-[1500px] mx-auto px-10">
             {/* 3-column grid: left text | phone | right text */}
             <div
               className="grid items-center"
-              style={{ gridTemplateColumns: 'minmax(0, 1fr) 520px minmax(0, 1fr)', gap: '56px' }}
+              style={{ gridTemplateColumns: 'minmax(0, 1fr) 440px minmax(0, 1fr)', gap: '40px' }}
             >
               {/* LEFT column */}
-              <div className="relative" style={{ height: 540 }}>
+              <div className="relative" style={{ height: 560 }}>
                 <motion.div style={{ opacity: s0Op, x: s0X, position: 'absolute', inset: 0, display: 'flex', alignItems: 'center' }}>
                   <SceneText scene={scenes[0]} align="left" />
                 </motion.div>
@@ -638,9 +638,9 @@ function DesktopScrollStory() {
                 </motion.div>
               </div>
 
-              {/* CENTER: Phone — shifted down so top of screen is prominent */}
-              <div className="flex flex-col items-center gap-5" style={{ transform: 'translateY(140px)' }}>
-                <PhoneFrame scale={1.7}>
+              {/* CENTER: Phone — vertically centered, no offset */}
+              <div className="flex flex-col items-center gap-4">
+                <PhoneFrame scale={1.45}>
                   {phoneScreens[activeScene]}
                 </PhoneFrame>
 
@@ -669,7 +669,7 @@ function DesktopScrollStory() {
               </div>
 
               {/* RIGHT column */}
-              <div className="relative" style={{ height: 540 }}>
+              <div className="relative" style={{ height: 560 }}>
                 <motion.div style={{ opacity: s1Op, x: s1X, position: 'absolute', inset: 0, display: 'flex', alignItems: 'center' }}>
                   <SceneText scene={scenes[1]} align="right" />
                 </motion.div>
