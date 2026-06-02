@@ -471,9 +471,28 @@ function MobileScrollStory() {
 
   return (
     <section className="lg:hidden py-20 px-5 bg-[#07080F] relative overflow-hidden">
-      {/* Background glow */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-[#0A66C2]/10 blur-3xl rounded-full" />
+      {/* Multi-layer mobile glow — centered behind phone */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div style={{
+          position: 'absolute', top: '36%', left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 460, height: 360,
+          background: 'radial-gradient(ellipse at 50% 50%, rgba(10,102,194,0.14) 0%, rgba(10,102,194,0.05) 44%, transparent 68%)',
+        }} />
+        <div style={{
+          position: 'absolute', top: '34%', left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 280, height: 220,
+          background: 'radial-gradient(ellipse at 50% 45%, rgba(14,118,210,0.20) 0%, transparent 70%)',
+          filter: 'blur(14px)',
+        }} />
+        <div style={{
+          position: 'absolute', top: '32%', left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 120, height: 90,
+          background: 'radial-gradient(ellipse at 50% 44%, rgba(96,180,248,0.26) 0%, transparent 72%)',
+          filter: 'blur(6px)',
+        }} />
       </div>
 
       {/* Phone — centered and intentionally oversized for the outcome story. */}
@@ -617,9 +636,40 @@ function DesktopScrollStory() {
       <section ref={ref} style={{ height: '400vh' }} className="relative">
         <div className="sticky top-0 h-screen overflow-hidden flex items-center bg-[#07080F]">
 
-          {/* Background glow */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] bg-[#0A66C2]/10 blur-3xl rounded-full" />
+          {/* Multi-layer blue glow — centered on phone visual position (50% + 60px translateY offset) */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {/* Layer 1: Wide ambient halo — pure radial-gradient, no blur for crisp smooth falloff */}
+            <div style={{
+              position: 'absolute',
+              top: 'calc(50% + 60px)',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 920,
+              height: 680,
+              background: 'radial-gradient(ellipse at 50% 50%, rgba(10,102,194,0.13) 0%, rgba(10,102,194,0.05) 42%, transparent 68%)',
+            }} />
+            {/* Layer 2: Mid bloom — blurred for that soft cloud-of-light feel */}
+            <div style={{
+              position: 'absolute',
+              top: 'calc(50% + 50px)',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 520,
+              height: 400,
+              background: 'radial-gradient(ellipse at 50% 45%, rgba(14,118,210,0.22) 0%, rgba(10,102,194,0.07) 50%, transparent 72%)',
+              filter: 'blur(20px)',
+            }} />
+            {/* Layer 3: Core specular — tight bright center, mimics a light source */}
+            <div style={{
+              position: 'absolute',
+              top: 'calc(50% + 36px)',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 210,
+              height: 160,
+              background: 'radial-gradient(ellipse at 50% 44%, rgba(96,180,248,0.28) 0%, rgba(30,134,212,0.10) 55%, transparent 76%)',
+              filter: 'blur(8px)',
+            }} />
           </div>
 
           <div className="w-full max-w-[1500px] mx-auto px-10">
