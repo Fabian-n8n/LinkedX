@@ -428,7 +428,7 @@ const scenes = [
   {
     side: 'right',
     label: 'Impression Engine',
-    headline: ['Every comment is', 'a brand impression.'],
+    headline: ['Every comment', 'is a brand impression.'],
     accentLine: 1,
     sub: 'Smart comments drive 10× more profile visits than posts alone. LinkedX places you in every relevant conversation, making your name synonymous with your industry.',
     stat: { value: '1,842', label: 'impressions per comment' },
