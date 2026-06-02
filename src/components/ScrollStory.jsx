@@ -471,27 +471,31 @@ function MobileScrollStory() {
 
   return (
     <section className="lg:hidden py-20 px-5 bg-[#07080F] relative overflow-hidden">
-      {/* Multi-layer mobile glow — centered behind phone */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      {/* Multi-layer mobile glow */}
+      <div className="absolute inset-0 pointer-events-none">
         <div style={{
           position: 'absolute', top: '36%', left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 460, height: 360,
-          background: 'radial-gradient(ellipse at 50% 50%, rgba(10,102,194,0.14) 0%, rgba(10,102,194,0.05) 44%, transparent 68%)',
+          width: 420, height: 300,
+          borderRadius: '50%',
+          background: 'rgba(10,102,194,0.28)',
+          filter: 'blur(80px)',
         }} />
         <div style={{
           position: 'absolute', top: '34%', left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 280, height: 220,
-          background: 'radial-gradient(ellipse at 50% 45%, rgba(14,118,210,0.20) 0%, transparent 70%)',
-          filter: 'blur(14px)',
+          width: 240, height: 180,
+          borderRadius: '50%',
+          background: 'rgba(14,118,210,0.36)',
+          filter: 'blur(40px)',
         }} />
         <div style={{
           position: 'absolute', top: '32%', left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 120, height: 90,
-          background: 'radial-gradient(ellipse at 50% 44%, rgba(96,180,248,0.26) 0%, transparent 72%)',
-          filter: 'blur(6px)',
+          width: 110, height: 80,
+          borderRadius: '50%',
+          background: 'rgba(96,180,248,0.42)',
+          filter: 'blur(18px)',
         }} />
       </div>
 
@@ -636,39 +640,43 @@ function DesktopScrollStory() {
       <section ref={ref} style={{ height: '400vh' }} className="relative">
         <div className="sticky top-0 h-screen overflow-hidden flex items-center bg-[#07080F]">
 
-          {/* Multi-layer blue glow — centered on phone visual position (50% + 60px translateY offset) */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            {/* Layer 1: Wide ambient halo — pure radial-gradient, no blur for crisp smooth falloff */}
+          {/* Multi-layer blue glow — centered on phone visual position */}
+          <div className="absolute inset-0 pointer-events-none">
+            {/* Layer 1: Wide ambient — large, heavily blurred, sets the room tone */}
             <div style={{
               position: 'absolute',
               top: 'calc(50% + 60px)',
               left: '50%',
               transform: 'translate(-50%, -50%)',
-              width: 920,
-              height: 680,
-              background: 'radial-gradient(ellipse at 50% 50%, rgba(10,102,194,0.13) 0%, rgba(10,102,194,0.05) 42%, transparent 68%)',
+              width: 860,
+              height: 560,
+              borderRadius: '50%',
+              background: 'rgba(10,102,194,0.28)',
+              filter: 'blur(110px)',
             }} />
-            {/* Layer 2: Mid bloom — blurred for that soft cloud-of-light feel */}
+            {/* Layer 2: Mid bloom — tighter, brighter core cloud */}
             <div style={{
               position: 'absolute',
               top: 'calc(50% + 50px)',
               left: '50%',
               transform: 'translate(-50%, -50%)',
-              width: 520,
-              height: 400,
-              background: 'radial-gradient(ellipse at 50% 45%, rgba(14,118,210,0.22) 0%, rgba(10,102,194,0.07) 50%, transparent 72%)',
-              filter: 'blur(20px)',
+              width: 480,
+              height: 320,
+              borderRadius: '50%',
+              background: 'rgba(14,118,210,0.38)',
+              filter: 'blur(60px)',
             }} />
-            {/* Layer 3: Core specular — tight bright center, mimics a light source */}
+            {/* Layer 3: Specular core — tight bright center */}
             <div style={{
               position: 'absolute',
-              top: 'calc(50% + 36px)',
+              top: 'calc(50% + 38px)',
               left: '50%',
               transform: 'translate(-50%, -50%)',
-              width: 210,
-              height: 160,
-              background: 'radial-gradient(ellipse at 50% 44%, rgba(96,180,248,0.28) 0%, rgba(30,134,212,0.10) 55%, transparent 76%)',
-              filter: 'blur(8px)',
+              width: 200,
+              height: 140,
+              borderRadius: '50%',
+              background: 'rgba(96,180,248,0.45)',
+              filter: 'blur(28px)',
             }} />
           </div>
 
