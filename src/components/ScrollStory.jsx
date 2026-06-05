@@ -1,51 +1,45 @@
 /**
- * ScrollStory.jsx
+ * ScrollStory.jsx  —  Cinematic dark → cream → dark scroll narrative
  *
- * Light cream section (#F5F1EC) with smooth gradient transitions from/to dark.
- * Desktop: video sticky left, 4 feature copy blocks scroll-driven on right.
- * Mobile:  video fixed at top, auto-cycling text below.
- * Respects prefers-reduced-motion (shows poster, pauses autoPlay).
+ * Desktop layout:
+ *   ┌──────────────┬──────────────┬──────────────┐
+ *   │ Block 0 (L)  │  PHONE VIDEO │              │  80–200 vh
+ *   │              │   (sticky)   │              │
+ *   │              │              │ Block 1 (R)  │  200–320 vh
+ *   │ Block 2 (L)  │              │              │  320–440 vh
+ *   │              │              │ Block 3 (R)  │  440–560 vh
+ *   └──────────────┴──────────────┴──────────────┘
+ *
+ * Background: useSpring(scrollYProgress) → useTransform → DARK↔CREAM↔DARK
+ * Each block: whileInView with staggered label → headline → body → stat
+ * Mobile: cream bg, video at top, blocks stacked centered, whileInView entrance
  */
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import {
   motion,
   useScroll,
+  useSpring,
   useTransform,
-  useMotionValueEvent,
   AnimatePresence,
 } from 'framer-motion';
 
+/* ─── tokens ──────────────────────────────────────────────────────────── */
+const DARK  = '#07080F';
 const CREAM = '#F5F1EC';
 const INK   = '#0F1419';
 const BLUE  = '#0A66C2';
-const DARK  = '#07080F';
+const EASE  = [0.25, 0.1, 0.25, 1]; // easeOutCubic
 
-/* ══════════════════════════════════════════════════════
-   Reduced-motion hook
-══════════════════════════════════════════════════════ */
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setReduced(mq.matches);
-    const handler = (e) => setReduced(e.matches);
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
-  }, []);
-  return reduced;
-}
-
-/* ══════════════════════════════════════════════════════
-   Scene data — copy exactly as specified
-══════════════════════════════════════════════════════ */
+/* ─── scenes ──────────────────────────────────────────────────────────── */
 const scenes = [
   {
     label: 'Network Growth',
     headline: ['Your network grows', 'while you sleep.'],
     accentLine: 1,
     sub: 'LinkedX engages with key voices in your industry every single day — in your tone, without you lifting a finger. Connection requests roll in on autopilot.',
-    stat: { value: '50+', label: 'new connections/month' },
+    stat: { value: '50+', label: 'new connections / month' },
+    side: 'left',
   },
   {
     label: 'Impression Engine',
@@ -53,6 +47,7 @@ const scenes = [
     accentLine: 1,
     sub: 'Smart comments drive 10× more profile visits than posts alone. LinkedX places you in every relevant conversation, making your name synonymous with your industry.',
     stat: { value: '1,842', label: 'impressions per comment' },
+    side: 'right',
   },
   {
     label: 'Opportunity Magnet',
@@ -60,6 +55,7 @@ const scenes = [
     accentLine: 0,
     sub: 'A consistent, visible LinkedIn presence attracts recruiters, investors, and clients — without sending a single cold message. Your profile becomes inbound-only.',
     stat: { value: '$270K', label: 'recruiter outreach (SGD)' },
+    side: 'left',
   },
   {
     label: 'Growth Analytics',
@@ -67,66 +63,122 @@ const scenes = [
     accentLine: 1,
     sub: 'Track which comments earned impressions, which posts grew your following, and how your LinkedIn authority is climbing — all in one dashboard, week over week.',
     stat: { value: '+340%', label: 'profile view increase' },
+    side: 'right',
   },
 ];
 
-/* ══════════════════════════════════════════════════════
-   Video player component
-══════════════════════════════════════════════════════ */
-function ProductVideo({ reducedMotion, style = {} }) {
+/* ─── reduced-motion hook ─────────────────────────────────────────────── */
+function usePrefersReducedMotion() {
+  const [v, setV] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setV(mq.matches);
+    const h = (e) => setV(e.matches);
+    mq.addEventListener('change', h);
+    return () => mq.removeEventListener('change', h);
+  }, []);
+  return v;
+}
+
+/* ─── video ───────────────────────────────────────────────────────────── */
+function ProductVideo({ reducedMotion }) {
   return (
     <video
       autoPlay={!reducedMotion}
       muted
       loop
       playsInline
+      preload="metadata"
       poster="/images/linkedx-poster.jpg"
-      aria-label="LinkedX LinkedIn automation product demo: connection requests, recruiter messages, and post analytics flowing in real time"
-      style={{
-        width: '100%',
-        height: '100%',
-        objectFit: 'cover',
-        display: 'block',
-        ...style,
-      }}
+      aria-label="LinkedX LinkedIn automation demo: connections, recruiter messages, and analytics in real time"
+      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
     >
       <source src="/videos/linkedx-hero.mp4" type="video/mp4" />
     </video>
   );
 }
 
-/* ══════════════════════════════════════════════════════
-   Scene text block — cream/light theme
-══════════════════════════════════════════════════════ */
-function SceneText({ scene, align = 'left' }) {
-  const isCenter = align === 'center';
-  const isRight  = align === 'right';
+/* ─── feature copy block ──────────────────────────────────────────────── */
+/*
+ * whileInView with staggered children: label → headline → body → stat
+ * Slides in from its designated side (left blocks from -30px, right from +30px)
+ * re-animates on scroll up/down (once: false)
+ */
+function SceneBlock({ scene, side, reducedMotion }) {
+  const isLeft   = side === 'left';
+  const isRight  = side === 'right';
+  const isCenter = side === 'center';
+  const dx       = isLeft ? -30 : isRight ? 30 : 0;
+  const align    = isCenter ? 'center' : side;
+
+  const sharedTextStyle = {
+    fontFamily: 'Outfit, sans-serif',
+    textAlign: align,
+  };
+
+  if (reducedMotion) {
+    return (
+      <div style={{ ...sharedTextStyle, maxWidth: isCenter ? 360 : 440, marginLeft: isRight ? 'auto' : undefined }}>
+        <StaticBlock scene={scene} align={align} />
+      </div>
+    );
+  }
+
+  const container = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.1 } },
+  };
+  const fromTop = {
+    hidden: { opacity: 0, y: -10 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE } },
+  };
+  const fromSide = {
+    hidden: { opacity: 0, x: dx, y: isCenter ? 14 : 0 },
+    visible: { opacity: 1, x: 0, y: 0, transition: { duration: 0.65, ease: EASE } },
+  };
+  const fromSideLight = {
+    hidden: { opacity: 0, x: dx * 0.6, y: isCenter ? 10 : 0 },
+    visible: { opacity: 1, x: 0, y: 0, transition: { duration: 0.6, ease: EASE } },
+  };
+  const fromBelow = {
+    hidden: { opacity: 0, y: 14 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE } },
+  };
 
   return (
-    <div style={{ textAlign: align }}>
-      {/* Label */}
-      <p style={{
-        fontSize: '0.65rem',
-        fontWeight: 800,
-        letterSpacing: '0.14em',
-        textTransform: 'uppercase',
-        color: BLUE,
-        marginBottom: '0.875rem',
-        fontFamily: 'Outfit, sans-serif',
-      }}>
+    <motion.div
+      variants={container}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: false, amount: 0.45 }}
+      style={{
+        ...sharedTextStyle,
+        maxWidth: isCenter ? 360 : 440,
+        marginLeft: isRight ? 'auto' : isCenter ? 'auto' : undefined,
+        marginRight: isCenter ? 'auto' : undefined,
+      }}
+    >
+      {/* Eyebrow label */}
+      <motion.p
+        variants={fromTop}
+        style={{
+          fontSize: '0.625rem', fontWeight: 800, letterSpacing: '0.15em',
+          textTransform: 'uppercase', color: BLUE, marginBottom: '0.875rem',
+        }}
+      >
         {scene.label}
-      </p>
+      </motion.p>
 
       {/* Headline */}
-      <h3 style={{
-        fontFamily: 'Outfit, sans-serif',
-        fontWeight: 900,
-        color: INK,
-        lineHeight: 0.98,
-        letterSpacing: '-0.045em',
-        fontSize: 'clamp(2.2rem, 3.2vw, 4rem)',
-        marginBottom: '1.25rem',
-      }}>
+      <motion.h3
+        variants={fromSide}
+        style={{
+          fontWeight: 900, color: INK, lineHeight: 0.97,
+          letterSpacing: '-0.045em',
+          fontSize: 'clamp(2rem, 2.7vw, 3.6rem)',
+          marginBottom: '1.25rem',
+        }}
+      >
         {scene.headline.map((line, i) => (
           <span key={i}>
             {i > 0 && <br />}
@@ -135,257 +187,274 @@ function SceneText({ scene, align = 'left' }) {
               : line}
           </span>
         ))}
-      </h3>
+      </motion.h3>
 
       {/* Body */}
-      <p style={{
-        color: '#526070',
-        fontSize: '1rem',
-        lineHeight: 1.75,
-        marginBottom: '1.5rem',
-        maxWidth: isCenter ? '34ch' : 380,
-        marginLeft:  isRight  ? 'auto' : isCenter ? 'auto' : 0,
-        marginRight: isCenter ? 'auto' : 0,
-      }}>
+      <motion.p
+        variants={fromSideLight}
+        style={{
+          color: '#526070', fontSize: '1rem', lineHeight: 1.78,
+          marginBottom: '1.5rem',
+          maxWidth: isCenter ? 340 : 380,
+          marginLeft:  isCenter ? 'auto' : 0,
+          marginRight: isCenter ? 'auto' : 0,
+        }}
+      >
         {scene.sub}
-      </p>
+      </motion.p>
 
       {/* Stat */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'baseline',
-        gap: '0.5rem',
-        justifyContent: isRight ? 'flex-end' : isCenter ? 'center' : 'flex-start',
-      }}>
+      <motion.div
+        variants={fromBelow}
+        style={{
+          display: 'flex', alignItems: 'baseline', gap: '0.5rem',
+          justifyContent: isCenter ? 'center' : isRight ? 'flex-end' : 'flex-start',
+        }}
+      >
         <span style={{
-          fontSize: '3rem',
-          fontWeight: 900,
-          color: BLUE,
-          lineHeight: 1,
-          letterSpacing: '-0.035em',
-          fontFamily: 'Outfit, sans-serif',
+          fontSize: '3rem', fontWeight: 900, color: BLUE,
+          lineHeight: 1, letterSpacing: '-0.04em',
         }}>
           {scene.stat.value}
         </span>
         <span style={{ fontSize: '0.875rem', color: '#8A9AAA' }}>
           {scene.stat.label}
         </span>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
-/* ══════════════════════════════════════════════════════════════════════════
-   MOBILE render tree  (lg:hidden)
-   Video at top, auto-cycling feature text below. No sticky scroll.
-══════════════════════════════════════════════════════════════════════════ */
+/* plain fallback used when reducedMotion = true */
+function StaticBlock({ scene, align }) {
+  const isCenter = align === 'center';
+  const isRight  = align === 'right';
+  return (
+    <>
+      <p style={{ fontSize: '0.625rem', fontWeight: 800, letterSpacing: '0.15em', textTransform: 'uppercase', color: BLUE, marginBottom: '0.875rem' }}>
+        {scene.label}
+      </p>
+      <h3 style={{ fontWeight: 900, color: INK, lineHeight: 0.97, letterSpacing: '-0.045em', fontSize: 'clamp(2rem, 2.7vw, 3.6rem)', marginBottom: '1.25rem' }}>
+        {scene.headline.map((line, i) => (
+          <span key={i}>{i > 0 && <br />}{i === scene.accentLine ? <span style={{ color: BLUE }}>{line}</span> : line}</span>
+        ))}
+      </h3>
+      <p style={{ color: '#526070', fontSize: '1rem', lineHeight: 1.78, marginBottom: '1.5rem', maxWidth: isCenter ? 340 : 380, marginLeft: isCenter ? 'auto' : 0, marginRight: isCenter ? 'auto' : 0 }}>
+        {scene.sub}
+      </p>
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', justifyContent: isCenter ? 'center' : isRight ? 'flex-end' : 'flex-start' }}>
+        <span style={{ fontSize: '3rem', fontWeight: 900, color: BLUE, lineHeight: 1, letterSpacing: '-0.04em' }}>{scene.stat.value}</span>
+        <span style={{ fontSize: '0.875rem', color: '#8A9AAA' }}>{scene.stat.label}</span>
+      </div>
+    </>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   MOBILE  (lg:hidden)
+   Cream bg with static gradient edges. Video at top. Blocks stacked,
+   each with its own whileInView entrance.
+════════════════════════════════════════════════════════════════════════ */
 function MobileScrollStory({ reducedMotion }) {
-  const [active, setActive]   = useState(0);
-  const [paused, setPaused]   = useState(false);
-
-  useEffect(() => {
-    if (paused) return;
-    const t = setInterval(() => setActive(a => (a + 1) % scenes.length), 3800);
-    return () => clearInterval(t);
-  }, [paused]);
-
-  const scene = scenes[active];
-
   return (
     <section
       className="lg:hidden"
-      style={{ backgroundColor: CREAM, position: 'relative', overflow: 'hidden' }}
+      style={{ position: 'relative', backgroundColor: CREAM, overflow: 'hidden' }}
     >
-      {/* Top gradient: dark → cream */}
-      <div style={{
-        position: 'absolute', top: 0, left: 0, right: 0, height: 120,
+      {/* ── top fade: DARK → CREAM ── */}
+      <div aria-hidden style={{
+        position: 'absolute', top: 0, left: 0, right: 0, height: '14vh',
         background: `linear-gradient(to bottom, ${DARK} 0%, ${CREAM} 100%)`,
-        zIndex: 2, pointerEvents: 'none',
+        zIndex: 4, pointerEvents: 'none',
       }} />
 
-      {/* Video */}
-      <div style={{ position: 'relative', zIndex: 1, padding: '100px 20px 28px' }}>
-        <div style={{
-          maxWidth: 320,
-          margin: '0 auto',
-          borderRadius: 20,
-          overflow: 'hidden',
-          aspectRatio: '9 / 16',
-          boxShadow: '0 24px 64px rgba(15,20,25,0.22), 0 0 0 1px rgba(15,20,25,0.07)',
-        }}>
+      {/* ── video ── */}
+      <div style={{ padding: '16vh 24px 32px', position: 'relative', zIndex: 1 }}>
+        <motion.div
+          initial={reducedMotion ? false : { opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.7, ease: EASE }}
+          style={{
+            maxWidth: 280, margin: '0 auto',
+            borderRadius: 20, overflow: 'hidden',
+            aspectRatio: '9 / 16',
+            boxShadow: '0 24px 64px rgba(15,20,25,0.22), 0 0 0 1px rgba(15,20,25,0.07)',
+          }}
+        >
           <ProductVideo reducedMotion={reducedMotion} />
-        </div>
+        </motion.div>
       </div>
 
-      {/* Scene dots */}
-      <div style={{ display: 'flex', justifyContent: 'center', gap: 10, marginBottom: 24, position: 'relative', zIndex: 1 }}>
-        {scenes.map((s, i) => (
-          <button
+      {/* ── feature blocks ── */}
+      <div style={{ padding: '0 28px', position: 'relative', zIndex: 1 }}>
+        {scenes.map((scene, i) => (
+          <div
             key={i}
-            aria-label={`Feature ${i + 1}: ${s.label}`}
-            onClick={() => { setActive(i); setPaused(true); }}
-            style={{
-              height: 4, width: i === active ? 24 : 8, borderRadius: 100,
-              background: i === active ? BLUE : 'rgba(15,20,25,0.18)',
-              border: 'none', cursor: 'pointer', padding: 0,
-              transition: 'width 0.3s ease, background 0.3s ease',
-            }}
-          />
+            style={{ paddingBottom: i < scenes.length - 1 ? '14vw' : '18vh' }}
+          >
+            <SceneBlock scene={scene} side="center" reducedMotion={reducedMotion} />
+          </div>
         ))}
       </div>
 
-      {/* Animated scene text */}
-      <div style={{ padding: '0 24px 96px', position: 'relative', zIndex: 1, minHeight: 260 }}>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={active}
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -14 }}
-            transition={{ duration: 0.32, ease: 'easeInOut' }}
-          >
-            <SceneText scene={scene} align="center" />
-          </motion.div>
-        </AnimatePresence>
-      </div>
-
-      {/* Bottom gradient: cream → dark */}
-      <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0, height: 120,
+      {/* ── bottom fade: CREAM → DARK ── */}
+      <div aria-hidden style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0, height: '14vh',
         background: `linear-gradient(to bottom, ${CREAM} 0%, ${DARK} 100%)`,
-        zIndex: 2, pointerEvents: 'none',
+        zIndex: 4, pointerEvents: 'none',
       }} />
     </section>
   );
 }
 
-/* ══════════════════════════════════════════════════════════════════════════
-   DESKTOP render tree  (hidden lg:block)
-   400 vh sticky scroll — video pinned left, 4 feature blocks right.
-══════════════════════════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════════════
+   DESKTOP  (hidden lg:block)
+
+   Section height: 740 vh
+   Scroll distance: 740 - 100 (viewport) = 640 vh  →  progress 0 → 1
+
+   Background keyframes (smoothP):
+     0.000 → 0.125  :  DARK  → CREAM   (80 vh scroll)
+     0.125 → 0.875  :  CREAM
+     0.875 → 1.000  :  CREAM → DARK    (80 vh scroll)
+
+   3-column grid  |  minmax(0,1fr)  |  290 px  |  minmax(0,1fr)  |
+   Each side column sums to 740 vh exactly.
+   Center column: phone div with  position:sticky  top:50%  translateY(-50%)
+
+   Feature block centers (progress):
+     Block 0  140 vh / 640 = 0.219
+     Block 1  260 vh / 640 = 0.406
+     Block 2  380 vh / 640 = 0.594
+     Block 3  500 vh / 640 = 0.781   (all comfortably inside cream zone)
+════════════════════════════════════════════════════════════════════════ */
 function DesktopScrollStory({ reducedMotion }) {
   const ref = useRef(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] });
 
-  const [activeScene, setActiveScene] = useState(0);
-  useMotionValueEvent(scrollYProgress, 'change', (v) => {
-    setActiveScene(Math.min(3, Math.floor(v * 4)));
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start start', 'end end'],
   });
 
-  /* Per-scene opacity + upward entrance */
-  const s0Op = useTransform(scrollYProgress, [0,    0.04, 0.21, 0.25], [0, 1, 1, 0]);
-  const s0Y  = useTransform(scrollYProgress, [0,    0.04],              [20, 0]);
-  const s1Op = useTransform(scrollYProgress, [0.25, 0.29, 0.46, 0.5],  [0, 1, 1, 0]);
-  const s1Y  = useTransform(scrollYProgress, [0.25, 0.29],              [20, 0]);
-  const s2Op = useTransform(scrollYProgress, [0.5,  0.54, 0.71, 0.75], [0, 1, 1, 0]);
-  const s2Y  = useTransform(scrollYProgress, [0.5,  0.54],              [20, 0]);
-  const s3Op = useTransform(scrollYProgress, [0.75, 0.79, 0.96, 1],    [0, 1, 1, 0]);
-  const s3Y  = useTransform(scrollYProgress, [0.75, 0.79],              [20, 0]);
+  /* Spring-smoothed progress drives background morphing */
+  const smoothP = useSpring(scrollYProgress, {
+    stiffness: 80,
+    damping:   20,
+    restDelta: 0.001,
+  });
 
-  const sceneAnims = [
-    { op: s0Op, y: s0Y },
-    { op: s1Op, y: s1Y },
-    { op: s2Op, y: s2Y },
-    { op: s3Op, y: s3Y },
-  ];
+  /* Background color: DARK → CREAM → DARK */
+  const bgColor = useTransform(
+    smoothP,
+    [0, 0.125, 0.875, 1.0],
+    [DARK, CREAM, CREAM, DARK],
+  );
 
   return (
     <div className="hidden lg:block">
-      <section
+      <motion.section
         ref={ref}
-        style={{ height: '400vh', position: 'relative', backgroundColor: CREAM }}
+        style={{
+          position: 'relative',
+          height: '740vh',
+          backgroundColor: bgColor,
+          willChange: 'background-color',
+        }}
       >
-        {/* Top gradient transition: dark → cream */}
-        <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, height: 100, zIndex: 4,
-          background: `linear-gradient(to bottom, ${DARK} 0%, ${CREAM} 100%)`,
-          pointerEvents: 'none',
-        }} />
-
-        {/* Sticky viewport */}
+        {/* ── 3-column grid ── */}
         <div
-          className="sticky top-0 overflow-hidden"
-          style={{ height: '100vh', backgroundColor: CREAM }}
+          style={{
+            maxWidth: 1440,
+            margin: '0 auto',
+            padding: '0 72px',
+            display: 'grid',
+            gridTemplateColumns: 'minmax(0, 1fr) 290px minmax(0, 1fr)',
+            columnGap: 56,
+          }}
         >
-          <div
-            className="h-full flex items-center mx-auto px-12"
-            style={{ maxWidth: 1400, position: 'relative', zIndex: 1 }}
-          >
-            <div
-              className="grid w-full items-center"
-              style={{ gridTemplateColumns: '1fr 1fr', gap: '5vw' }}
-            >
-              {/* LEFT: Sticky video */}
-              <div className="flex justify-center items-center">
-                <div style={{
-                  height: 'clamp(400px, 70vh, 680px)',
-                  aspectRatio: '9 / 16',
-                  borderRadius: 28,
-                  overflow: 'hidden',
-                  boxShadow: [
-                    '0 40px 96px rgba(15,20,25,0.20)',
-                    '0 0 0 1px rgba(15,20,25,0.07)',
-                  ].join(', '),
-                }}>
-                  <ProductVideo reducedMotion={reducedMotion} />
-                </div>
-              </div>
 
-              {/* RIGHT: Scroll-driven text blocks */}
-              <div style={{ position: 'relative', height: 480 }}>
-                {scenes.map((scene, i) => (
-                  <motion.div
-                    key={i}
-                    style={{
-                      opacity: sceneAnims[i].op,
-                      y: sceneAnims[i].y,
-                      position: 'absolute',
-                      inset: 0,
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <SceneText scene={scene} align="left" />
-                  </motion.div>
-                ))}
-              </div>
+          {/* ══ LEFT column: blocks 0, 2 ══ */}
+          <div>
+            {/* top buffer — dark-to-cream transition lives here */}
+            <div style={{ height: '80vh' }} />
+
+            {/* Block 0 — Network Growth */}
+            <div style={{ height: '120vh', display: 'flex', alignItems: 'center' }}>
+              <SceneBlock scene={scenes[0]} side="left" reducedMotion={reducedMotion} />
+            </div>
+
+            {/* Spacer aligns with Block 1 zone */}
+            <div style={{ height: '120vh' }} />
+
+            {/* Block 2 — Opportunity Magnet */}
+            <div style={{ height: '120vh', display: 'flex', alignItems: 'center' }}>
+              <SceneBlock scene={scenes[2]} side="left" reducedMotion={reducedMotion} />
+            </div>
+
+            {/* Spacer aligns with Block 3 zone + cream-to-dark transition */}
+            <div style={{ height: '120vh' }} />
+
+            {/* bottom buffer */}
+            <div style={{ height: '180vh' }} />
+          </div>
+
+          {/* ══ CENTER column: sticky phone video ══ */}
+          <div>
+            <div
+              style={{
+                position: 'sticky',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                /* height is set by aspect-ratio + width of this 290px column */
+                height: 'clamp(360px, 43vh, 500px)',
+                aspectRatio: '9 / 16',
+                borderRadius: 24,
+                overflow: 'hidden',
+                zIndex: 10,
+                boxShadow: [
+                  '0 32px 80px rgba(15,20,25,0.22)',
+                  '0 0 0 1px rgba(15,20,25,0.08)',
+                ].join(', '),
+                willChange: 'transform',
+              }}
+            >
+              <ProductVideo reducedMotion={reducedMotion} />
             </div>
           </div>
 
-          {/* Progress dots */}
-          <div style={{
-            position: 'absolute', bottom: 32, left: '50%',
-            transform: 'translateX(-50%)',
-            display: 'flex', gap: 8, zIndex: 2,
-          }}>
-            {scenes.map((_, i) => (
-              <div
-                key={i}
-                style={{
-                  height: 4, borderRadius: 100,
-                  width: i === activeScene ? 28 : 12,
-                  background: i === activeScene ? BLUE : 'rgba(15,20,25,0.18)',
-                  transition: 'width 0.3s ease, background 0.3s ease',
-                }}
-              />
-            ))}
-          </div>
-        </div>
+          {/* ══ RIGHT column: blocks 1, 3 ══ */}
+          <div>
+            {/* top buffer */}
+            <div style={{ height: '80vh' }} />
 
-        {/* Bottom gradient transition: cream → dark */}
-        <div style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0, height: 100, zIndex: 4,
-          background: `linear-gradient(to bottom, ${CREAM} 0%, ${DARK} 100%)`,
-          pointerEvents: 'none',
-        }} />
-      </section>
+            {/* Spacer aligns with Block 0 zone */}
+            <div style={{ height: '120vh' }} />
+
+            {/* Block 1 — Impression Engine */}
+            <div style={{ height: '120vh', display: 'flex', alignItems: 'center' }}>
+              <SceneBlock scene={scenes[1]} side="right" reducedMotion={reducedMotion} />
+            </div>
+
+            {/* Spacer aligns with Block 2 zone */}
+            <div style={{ height: '120vh' }} />
+
+            {/* Block 3 — Growth Analytics */}
+            <div style={{ height: '120vh', display: 'flex', alignItems: 'center' }}>
+              <SceneBlock scene={scenes[3]} side="right" reducedMotion={reducedMotion} />
+            </div>
+
+            {/* bottom buffer */}
+            <div style={{ height: '180vh' }} />
+          </div>
+
+        </div>
+      </motion.section>
     </div>
   );
 }
 
-/* ══════════════════════════════════════════════════════════════════════════
-   Export
-══════════════════════════════════════════════════════════════════════════ */
+/* ─── export ──────────────────────────────────────────────────────────── */
 export default function ScrollStory() {
   const reducedMotion = usePrefersReducedMotion();
   return (
