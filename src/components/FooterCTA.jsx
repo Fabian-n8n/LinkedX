@@ -23,7 +23,7 @@ export default function FooterCTA() {
           className="inline-flex items-center gap-2 bg-[#0A66C2]/10 border border-[#0A66C2]/25 rounded-full px-4 py-1.5 mb-10"
         >
           <Zap className="w-3 h-3 text-[#1E86D4]" />
-          <span className="text-[#1E86D4] text-xs font-semibold tracking-wide">Limited Beta Access · 340+ on waitlist</span>
+          <span className="text-[#1E86D4] text-xs font-semibold tracking-wide">Beta · Real results, no hype</span>
         </motion.div>
 
         <motion.h2
@@ -31,14 +31,14 @@ export default function FooterCTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="font-black leading-[1.03] tracking-[-0.04em] mb-8"
-          style={{ fontSize: 'clamp(2.5rem, 7vw, 5rem)' }}
+          className="font-black leading-[1.05] tracking-[-0.04em] mb-8"
+          style={{ fontSize: 'clamp(2.2rem, 5.5vw, 4.2rem)' }}
         >
-          Your competitors are
+          This won't make you go viral.
           <br />
-          <span className="text-gradient-accent">already growing.</span>
+          <span className="text-gradient-accent">It'll just make LinkedIn</span>
           <br />
-          <span className="text-white/25">Are you?</span>
+          <span className="text-gradient-accent">worth showing up to.</span>
         </motion.h2>
 
         <motion.p
@@ -46,9 +46,11 @@ export default function FooterCTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.15 }}
-          className="text-white/50 text-lg leading-[1.7] mb-12 max-w-xl mx-auto"
+          className="text-white/50 text-lg leading-[1.75] mb-12 max-w-[560px] mx-auto"
         >
-          Join the LinkedX waitlist today. Be among the first to automate your LinkedIn growth — and lock in your founding rate.
+          No promises about "10x growth" or "explosive engagement." Just consistent
+          presence, real comments, and a few more of the right conversations
+          happening in your DMs.
         </motion.p>
 
         <motion.div
@@ -60,13 +62,23 @@ export default function FooterCTA() {
         >
           <Link to="/waitlist" className="btn-primary text-base px-8 py-4">
             <Zap className="w-4 h-4" />
-            Claim Your Spot
+            Start 1-month free trial
             <ArrowRight className="w-4 h-4" />
           </Link>
           <a href="#pricing" className="btn-outline text-base px-8 py-4">
             View Pricing
           </a>
         </motion.div>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-8 text-white/25 text-sm"
+        >
+          Built by one person, beta-tested by people who hate AI slop.
+        </motion.p>
       </div>
     </section>
   );
