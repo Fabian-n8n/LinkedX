@@ -178,10 +178,10 @@ function InteractionCard({ card }) {
     <div
       className="w-[360px] rounded-2xl p-4 mb-3 flex-shrink-0"
       style={{
-        background: 'rgba(11, 13, 24, 0.92)',
-        border: '1px solid rgba(255,255,255,0.07)',
+        background: 'rgba(255,255,255,0.92)',
+        border: '1px solid rgba(15,20,25,0.08)',
         borderLeft: `3px solid ${card.accentLeft}`,
-        boxShadow: '0 4px 24px rgba(0,0,0,0.35)',
+        boxShadow: '0 4px 20px rgba(15,20,25,0.10)',
         backdropFilter: 'blur(12px)',
       }}
     >
@@ -199,14 +199,14 @@ function InteractionCard({ card }) {
         {/* Body */}
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2 mb-0.5">
-            <span className="text-white font-semibold text-[13px] leading-tight">{card.name}</span>
+            <span className="text-[#0F1419] font-semibold text-[13px] leading-tight">{card.name}</span>
             <div className="flex items-center gap-1.5 flex-shrink-0">
               <Icon style={{ color: card.iconColor }} className="w-3.5 h-3.5" />
-              <span className="text-white/30 text-[10px]">{card.time}</span>
+              <span className="text-[#0F1419]/35 text-[10px]">{card.time}</span>
             </div>
           </div>
-          <p className="text-white/35 text-[11px] mb-1.5 leading-tight">{card.role}</p>
-          <p className="text-white/55 text-[11px] leading-[1.55] line-clamp-2">{card.text}</p>
+          <p className="text-[#0F1419]/40 text-[11px] mb-1.5 leading-tight">{card.role}</p>
+          <p className="text-[#0F1419]/65 text-[11px] leading-[1.55] line-clamp-2">{card.text}</p>
 
           {/* Tag */}
           <div className="mt-2.5">
@@ -287,7 +287,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="font-black text-white leading-[1.02] tracking-[-0.04em] mb-6"
+            className="font-black text-[#0F1419] leading-[1.02] tracking-[-0.04em] mb-6"
             style={{ fontSize: 'clamp(2.6rem, 5.5vw, 4.8rem)' }}
           >
             Show up on
@@ -297,9 +297,9 @@ export default function Hero() {
             LinkedIn
             <br />
             every day.{' '}
-            <span className="text-white/25">Without writing</span>
+            <span className="text-[#0F1419]/25">Without writing</span>
             <br />
-            <span className="text-white/25">every day.</span>
+            <span className="text-[#0F1419]/25">every day.</span>
           </motion.h1>
 
           {/* Sub */}
@@ -307,7 +307,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.35 }}
-            className="text-white/55 text-lg leading-[1.7] mb-10 max-w-[460px]"
+            className="text-[#0F1419]/60 text-lg leading-[1.7] mb-10 max-w-[460px]"
           >
             AI that drafts posts in your voice, comments on the right people, and builds your network in the background.
           </motion.p>
@@ -321,15 +321,15 @@ export default function Hero() {
           >
             <Link
               to="/waitlist"
-              className="inline-flex items-center gap-2 bg-white text-[#07080F] font-bold text-sm px-7 py-4 rounded-full hover:bg-white/90 transition-all duration-200"
-              style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.25)' }}
+              className="inline-flex items-center gap-2 bg-[#0F1419] text-white font-bold text-sm px-7 py-4 rounded-full hover:bg-[#1a2130] transition-all duration-200"
+              style={{ boxShadow: '0 4px 20px rgba(15,20,25,0.22)' }}
             >
               <Zap className="w-4 h-4" />
               Claim Early Access
             </Link>
             <a
               href="#how-it-works"
-              className="inline-flex items-center gap-2 bg-white/[0.05] border border-white/[0.12] text-white font-medium text-sm px-7 py-4 rounded-full hover:bg-white/[0.09] hover:border-white/[0.2] transition-all duration-200"
+              className="inline-flex items-center gap-2 bg-[#0F1419]/[0.05] border border-[#0F1419]/[0.14] text-[#0F1419] font-medium text-sm px-7 py-4 rounded-full hover:bg-[#0F1419]/[0.09] hover:border-[#0F1419]/[0.24] transition-all duration-200"
             >
               <ArrowRight className="w-4 h-4" />
               See How It Works
@@ -354,7 +354,7 @@ export default function Hero() {
                 ].map(({ init, bg }) => (
                   <div
                     key={init}
-                    className="w-8 h-8 rounded-full border-2 border-[#07080F] flex items-center justify-center text-white text-[9px] font-bold"
+                    className="w-8 h-8 rounded-full border-2 border-[#F5F1EC] flex items-center justify-center text-white text-[9px] font-bold"
                     style={{ background: bg }}
                   >
                     {init}
@@ -362,13 +362,13 @@ export default function Hero() {
                 ))}
               </div>
               <div>
-                <div className="text-white font-semibold text-sm">340+ on waitlist</div>
-                <div className="text-white/35 text-xs">Founders · PMs · Creators</div>
+                <div className="text-[#0F1419] font-semibold text-sm">340+ on waitlist</div>
+                <div className="text-[#0F1419]/45 text-xs">Founders · PMs · Creators</div>
               </div>
             </div>
 
             {/* Divider */}
-            <div className="h-8 w-px bg-white/[0.1] hidden sm:block" />
+            <div className="h-8 w-px bg-[#0F1419]/[0.12] hidden sm:block" />
 
             {/* Stars */}
             <div>
@@ -377,7 +377,7 @@ export default function Hero() {
                   <Star key={i} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
                 ))}
               </div>
-              <div className="text-white/35 text-xs">Top tier quality · 5/5</div>
+              <div className="text-[#0F1419]/45 text-xs">Top tier quality · 5/5</div>
             </div>
           </motion.div>
         </div>
@@ -412,7 +412,7 @@ export default function Hero() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.2 }}
-              className="absolute -bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-[#0C0E1A] border border-white/[0.08] rounded-full px-3 py-1.5 text-xs text-white/40 whitespace-nowrap"
+              className="absolute -bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-white border border-[#0F1419]/[0.09] rounded-full px-3 py-1.5 text-xs text-[#0F1419]/50 whitespace-nowrap"
             >
               <div className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-pulse" />
               Live activity · updating in real time
@@ -423,7 +423,7 @@ export default function Hero() {
       </div>
 
       {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#07080F] to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#F5F1EC] to-transparent pointer-events-none" />
     </section>
   );
 }

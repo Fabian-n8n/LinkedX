@@ -100,7 +100,7 @@ export default function FAQ() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="border-y border-white/[0.08]"
+          className="border-y border-[#0F1419]/[0.08]"
         >
           {faqs.map((faq, index) => {
             const isOpen = openIndex === index;
@@ -110,12 +110,12 @@ export default function FAQ() {
                 <button
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? -1 : index)}
-                  className="group flex w-full items-center justify-between gap-6 px-8 py-6 text-left transition-colors duration-200 ease-out hover:bg-white/[0.025] max-sm:px-5 max-sm:py-5"
+                  className="group flex w-full items-center justify-between gap-6 px-8 py-6 text-left transition-colors duration-200 ease-out hover:bg-[#0F1419]/[0.03] max-sm:px-5 max-sm:py-5"
                   aria-expanded={isOpen}
                 >
                   <span
                     className={`text-lg font-semibold leading-snug transition-colors duration-200 ease-out ${
-                      isOpen ? 'text-white' : 'text-white/75 group-hover:text-white'
+                      isOpen ? 'text-[#0F1419]' : 'text-[#0F1419]/70 group-hover:text-[#0F1419]'
                     }`}
                   >
                     {faq.question}
@@ -126,8 +126,8 @@ export default function FAQ() {
                     }`}
                     aria-hidden="true"
                   >
-                    <span className="absolute left-1/2 top-1/2 h-px w-5 -translate-x-1/2 -translate-y-1/2 bg-white/70" />
-                    <span className="absolute left-1/2 top-1/2 h-5 w-px -translate-x-1/2 -translate-y-1/2 bg-white/70" />
+                    <span className="absolute left-1/2 top-1/2 h-px w-5 -translate-x-1/2 -translate-y-1/2 bg-[#0F1419]/60" />
+                    <span className="absolute left-1/2 top-1/2 h-5 w-px -translate-x-1/2 -translate-y-1/2 bg-[#0F1419]/60" />
                   </span>
                 </button>
 
@@ -140,7 +140,7 @@ export default function FAQ() {
                       transition={{ duration: 0.2, ease: 'easeOut' }}
                       className="overflow-hidden"
                     >
-                      <p className="px-8 pb-6 text-[15px] leading-[1.75] text-white/50 max-sm:px-5 max-sm:text-sm">
+                      <p className="px-8 pb-6 text-[15px] leading-[1.75] text-[#0F1419]/60 max-sm:px-5 max-sm:text-sm">
                         {faq.answer}
                       </p>
                     </motion.div>

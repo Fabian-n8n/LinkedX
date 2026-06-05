@@ -37,7 +37,7 @@ const cardVariants = {
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="py-32 px-6 bg-[#0A0B12]">
+    <section id="how-it-works" className="py-32 px-6 bg-[#F5F1EC]">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -69,7 +69,7 @@ export default function HowItWorks() {
               <motion.div key={step.num} variants={cardVariants} className="relative">
                 {/* Connector line between cards */}
                 {i < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-8 -right-2.5 w-5 h-px bg-gradient-to-r from-white/15 to-white/5 z-10" />
+                  <div className="hidden md:block absolute top-8 -right-2.5 w-5 h-px bg-gradient-to-r from-[#0F1419]/15 to-[#0F1419]/5 z-10" />
                 )}
 
                 <div className="glass-card h-full p-6 flex flex-col transition-all duration-300 hover:border-[rgba(10,102,194,0.2)]">
@@ -81,8 +81,8 @@ export default function HowItWorks() {
                     </div>
                   </div>
 
-                  <h3 className="font-bold text-white text-lg mb-3 tracking-tight">{step.title}</h3>
-                  <p className="text-sm text-white/45 leading-[1.75] flex-1">{step.desc}</p>
+                  <h3 className="font-bold text-[#0F1419] text-lg mb-3 tracking-tight">{step.title}</h3>
+                  <p className="text-sm text-[#0F1419]/55 leading-[1.75] flex-1">{step.desc}</p>
 
                   {/* Detail pill */}
                   <div className="mt-5 flex items-center gap-2">

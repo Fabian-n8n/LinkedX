@@ -6,15 +6,15 @@
   :root {
     --accent: #0A66C2;
     --accent-light: #1E86D4;
-    --accent-glow: rgba(10, 102, 194, 0.18);
-    --bg: #07080F;
-    --bg-elevated: #0C0E1A;
-    --bg-card: #0F1120;
-    --border: rgba(255, 255, 255, 0.07);
-    --border-accent: rgba(10, 102, 194, 0.3);
-    --text-primary: #ffffff;
-    --text-secondary: rgba(255, 255, 255, 0.55);
-    --text-tertiary: rgba(255, 255, 255, 0.3);
+    --accent-glow: rgba(10, 102, 194, 0.14);
+    --bg: #F5F1EC;
+    --bg-elevated: #EDE8E2;
+    --bg-card: #E8E2DB;
+    --border: rgba(15, 20, 25, 0.09);
+    --border-accent: rgba(10, 102, 194, 0.25);
+    --text-primary: #0F1419;
+    --text-secondary: rgba(15, 20, 25, 0.60);
+    --text-tertiary: rgba(15, 20, 25, 0.38);
     --radius: 0.75rem;
   }
 
@@ -38,8 +38,8 @@
   }
 
   ::selection {
-    background: rgba(10, 102, 194, 0.3);
-    color: #fff;
+    background: rgba(10, 102, 194, 0.2);
+    color: #0F1419;
   }
 
   ::-webkit-scrollbar {
@@ -68,7 +68,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 60%);
+    background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 60%);
     pointer-events: none;
   }
 
@@ -84,7 +84,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(10,102,194,0.07) 0%, transparent 60%);
+    background: linear-gradient(135deg, rgba(10,102,194,0.05) 0%, transparent 60%);
     pointer-events: none;
   }
 
@@ -116,12 +116,12 @@
     align-items: center;
     gap: 8px;
     background: transparent;
-    color: #ffffff;
+    color: #0F1419;
     font-weight: 500;
     font-size: 0.9rem;
     padding: 0.75rem 1.75rem;
     border-radius: 100px;
-    border: 1px solid rgba(255,255,255,0.15);
+    border: 1px solid rgba(15,20,25,0.18);
     cursor: pointer;
     transition: all 0.2s ease;
     text-decoration: none;
@@ -130,8 +130,8 @@
   }
 
   .btn-outline:hover {
-    border-color: rgba(255,255,255,0.35);
-    background: rgba(255,255,255,0.05);
+    border-color: rgba(15,20,25,0.38);
+    background: rgba(15,20,25,0.05);
   }
 
   .section-label {
@@ -148,11 +148,11 @@
     font-weight: 800;
     line-height: 1.05;
     letter-spacing: -0.03em;
-    color: #ffffff;
+    color: #0F1419;
   }
 
   .section-heading .muted {
-    color: rgba(255, 255, 255, 0.3);
+    color: rgba(15, 20, 25, 0.28);
   }
 
   .section-subtext {
@@ -187,15 +187,15 @@
     background: #ffffff;
     border-radius: 12px;
     padding: 14px 16px;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 24px rgba(15,20,25,0.12), 0 1px 6px rgba(15,20,25,0.07);
     font-family: 'Outfit', system-ui, sans-serif;
   }
 
   /* Grid bg utility */
   .grid-bg {
     background-image:
-      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      linear-gradient(rgba(15,20,25,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15,20,25,0.05) 1px, transparent 1px);
     background-size: 48px 48px;
   }
 
@@ -211,19 +211,19 @@
   }
 
   .pricing-card:hover {
-    border-color: rgba(255,255,255,0.12);
+    border-color: rgba(15,20,25,0.14);
   }
 
   .pricing-card.featured {
     border-color: var(--border-accent);
-    background: linear-gradient(135deg, rgba(10,102,194,0.08) 0%, var(--bg-card) 60%);
+    background: linear-gradient(135deg, rgba(10,102,194,0.07) 0%, var(--bg-card) 60%);
   }
 
   .pricing-card.featured::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(10,102,194,0.06) 0%, transparent 50%);
+    background: linear-gradient(135deg, rgba(10,102,194,0.04) 0%, transparent 50%);
     pointer-events: none;
   }
 

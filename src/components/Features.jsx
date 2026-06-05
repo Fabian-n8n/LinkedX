@@ -73,23 +73,23 @@ function FeatureCard({ feature }) {
       <div
         className="w-10 h-10 rounded-xl flex items-center justify-center mb-5 transition-all duration-300"
         style={{
-          background: hovered ? `rgba(${feature.color === '#0A66C2' ? '10,102,194' : '30,134,212'},0.2)` : 'rgba(255,255,255,0.05)',
-          border: `1px solid ${hovered ? `${feature.color}40` : 'rgba(255,255,255,0.08)'}`,
+          background: hovered ? `rgba(${feature.color === '#0A66C2' ? '10,102,194' : '30,134,212'},0.12)` : 'rgba(15,20,25,0.05)',
+          border: `1px solid ${hovered ? `${feature.color}35` : 'rgba(15,20,25,0.09)'}`,
         }}
       >
-        <Icon className="w-5 h-5 transition-colors duration-300" style={{ color: hovered ? feature.color : 'rgba(255,255,255,0.5)' }} />
+        <Icon className="w-5 h-5 transition-colors duration-300" style={{ color: hovered ? feature.color : 'rgba(15,20,25,0.38)' }} />
       </div>
 
-      <h3 className="font-bold text-white text-base mb-3 tracking-tight">{feature.title}</h3>
-      <p className="text-sm text-white/45 leading-[1.75] flex-1">{feature.desc}</p>
+      <h3 className="font-bold text-[#0F1419] text-base mb-3 tracking-tight">{feature.title}</h3>
+      <p className="text-sm text-[#0F1419]/55 leading-[1.75] flex-1">{feature.desc}</p>
 
       {/* Highlight pill */}
       <div
         className="mt-5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300"
         style={{
-          background: hovered ? 'rgba(10,102,194,0.15)' : 'rgba(255,255,255,0.04)',
-          color: hovered ? '#1E86D4' : 'rgba(255,255,255,0.35)',
-          border: `1px solid ${hovered ? 'rgba(10,102,194,0.3)' : 'rgba(255,255,255,0.06)'}`,
+          background: hovered ? 'rgba(10,102,194,0.1)' : 'rgba(15,20,25,0.04)',
+          color: hovered ? '#1E86D4' : 'rgba(15,20,25,0.38)',
+          border: `1px solid ${hovered ? 'rgba(10,102,194,0.25)' : 'rgba(15,20,25,0.07)'}`,
         }}
       >
         <Zap className="w-3 h-3" />
@@ -101,7 +101,7 @@ function FeatureCard({ feature }) {
 
 export default function Features() {
   return (
-    <section id="features" className="py-32 px-6 bg-[#0A0B12]">
+    <section id="features" className="py-32 px-6 bg-[#F5F1EC]">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 24 }}

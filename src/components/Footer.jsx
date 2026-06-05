@@ -15,7 +15,7 @@ export default function Footer() {
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
-      className="border-t border-white/[0.06] bg-[#07080F]"
+      className="border-t border-[#0F1419]/[0.07] bg-[#EDE8E2]"
     >
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-16">
@@ -25,11 +25,11 @@ export default function Footer() {
               <div className="w-8 h-8 rounded-lg bg-[#0A66C2] flex items-center justify-center">
                 <span className="text-white font-black text-sm tracking-tight">LX</span>
               </div>
-              <span className="font-bold text-base tracking-tight text-white">
-                Linked<span className="text-[#1E86D4]">X</span>
+              <span className="font-bold text-base tracking-tight text-[#0F1419]">
+                Linked<span className="text-[#0A66C2]">X</span>
               </span>
             </Link>
-            <p className="text-xs text-white/30 leading-[1.7] max-w-[180px]">
+            <p className="text-xs text-[#0F1419]/40 leading-[1.7] max-w-[180px]">
               Automate your LinkedIn growth. Build the network that builds your career.
             </p>
           </div>
@@ -37,14 +37,14 @@ export default function Footer() {
           {/* Link columns */}
           {Object.entries(footerLinks).map(([category, items]) => (
             <div key={category}>
-              <div className="text-[10px] font-bold text-white/25 uppercase tracking-widest mb-4">
+              <div className="text-[10px] font-bold text-[#0F1419]/30 uppercase tracking-widest mb-4">
                 {category}
               </div>
               {items.map((item) => (
                 <a
                   key={item}
                   href="#"
-                  className="block text-sm text-white/40 hover:text-white/70 transition-colors duration-150 mb-2"
+                  className="block text-sm text-[#0F1419]/45 hover:text-[#0F1419]/80 transition-colors duration-150 mb-2"
                 >
                   {item}
                 </a>
@@ -54,9 +54,9 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-white/[0.06] pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-white/20">© 2026 LinkedX. All rights reserved.</p>
-          <p className="text-[11px] text-white/15 max-w-md text-center md:text-right leading-[1.6]">
+        <div className="border-t border-[#0F1419]/[0.07] pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-[#0F1419]/30">© 2026 LinkedX. All rights reserved.</p>
+          <p className="text-[11px] text-[#0F1419]/22 max-w-md text-center md:text-right leading-[1.6]">
             LinkedX is an independent product. Not affiliated with or endorsed by LinkedIn Corporation.
           </p>
         </div>

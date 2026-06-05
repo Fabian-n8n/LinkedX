@@ -17,7 +17,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 /* ─── tokens ──────────────────────────────────────────────────────────── */
 const DARK  = '#07080F';
 const CREAM = '#F5F1EC';
-const INK   = '#0F1419';
+const INK   = '#0F1419';   // used for mobile cream bg; desktop overrides to white via textColor
 const BLUE  = '#0A66C2';
 const EASE  = [0.25, 0.1, 0.25, 1];
 
@@ -112,22 +112,18 @@ function SceneBlock({ scene, side, reducedMotion }) {
   };
 
   /* ── glass card styles (desktop) / plain text (mobile center) ── */
+  // Desktop (on video): white text with shadow for legibility
+  // Mobile (on cream bg): dark ink text
+  const textColor     = isCenter ? INK : '#ffffff';
+  const bodyColor     = isCenter ? 'rgba(15,20,25,0.60)' : 'rgba(255,255,255,0.75)';
+  const statLabelColor = isCenter ? '#8A9AAA' : 'rgba(255,255,255,0.55)';
+
   const cardStyle = isCenter
     ? { maxWidth: 360, margin: '0 auto' }
     : {
         maxWidth: 460,
         marginLeft: isRight ? 'auto' : 0,
-        background: 'rgba(245, 241, 236, 0.86)',
-        backdropFilter: 'blur(22px)',
-        WebkitBackdropFilter: 'blur(22px)',
-        borderRadius: 20,
-        padding: '36px 44px',
-        border: '1px solid rgba(255,255,255,0.68)',
-        boxShadow: [
-          '0 8px 48px rgba(15,20,25,0.13)',
-          '0 2px 8px rgba(15,20,25,0.06)',
-          'inset 0 1px 0 rgba(255,255,255,0.85)',
-        ].join(', '),
+        textShadow: '0 2px 16px rgba(0,0,0,0.55)',
       };
 
   return (
@@ -154,7 +150,7 @@ function SceneBlock({ scene, side, reducedMotion }) {
       <motion.h3
         variants={reducedMotion ? undefined : fromSide}
         style={{
-          fontFamily: 'Outfit, sans-serif', fontWeight: 900, color: INK,
+          fontFamily: 'Outfit, sans-serif', fontWeight: 900, color: textColor,
           lineHeight: 0.97, letterSpacing: '-0.045em',
           fontSize: 'clamp(1.75rem, 2.2vw, 3rem)',
           marginBottom: '1rem', textAlign,
@@ -174,7 +170,7 @@ function SceneBlock({ scene, side, reducedMotion }) {
       <motion.p
         variants={reducedMotion ? undefined : fromSideBody}
         style={{
-          color: '#4D5A68', fontSize: '0.875rem', lineHeight: 1.78,
+          color: bodyColor, fontSize: '0.875rem', lineHeight: 1.78,
           marginBottom: '1.25rem', textAlign,
           marginLeft: isCenter ? 'auto' : 0,
           marginRight: isCenter ? 'auto' : 0,
@@ -197,7 +193,7 @@ function SceneBlock({ scene, side, reducedMotion }) {
         }}>
           {scene.stat.value}
         </span>
-        <span style={{ fontSize: '0.8rem', color: '#8A9AAA' }}>
+        <span style={{ fontSize: '0.8rem', color: statLabelColor }}>
           {scene.stat.label}
         </span>
       </motion.div>

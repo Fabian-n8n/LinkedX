@@ -15,10 +15,10 @@ const repeated = [...items, ...items, ...items, ...items];
 
 export default function ProofBar() {
   return (
-    <div className="border-y border-white/[0.06] bg-[#0C0E1A] py-4 overflow-hidden relative">
+    <div className="border-y border-[#0F1419]/[0.07] bg-[#EDE8E2] py-4 overflow-hidden relative">
       {/* Edge fades */}
-      <div className="absolute left-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-r from-[#0C0E1A] to-transparent pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-l from-[#0C0E1A] to-transparent pointer-events-none" />
+      <div className="absolute left-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-r from-[#EDE8E2] to-transparent pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-l from-[#EDE8E2] to-transparent pointer-events-none" />
 
       <div className="ticker-track">
         {repeated.map((item, i) => {
@@ -29,8 +29,8 @@ export default function ProofBar() {
               className="flex items-center gap-2.5 px-8 whitespace-nowrap"
             >
               <Icon className="w-3.5 h-3.5 text-[#1E86D4] flex-shrink-0" />
-              <span className="text-sm text-white/45 font-medium">{item.text}</span>
-              <span className="w-1 h-1 rounded-full bg-white/15 flex-shrink-0" />
+              <span className="text-sm text-[#0F1419]/55 font-medium">{item.text}</span>
+              <span className="w-1 h-1 rounded-full bg-[#0F1419]/20 flex-shrink-0" />
             </div>
           );
         })}

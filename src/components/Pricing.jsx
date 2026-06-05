@@ -8,21 +8,21 @@ function FeaturePill({ icon: Icon, title, sub, featured }) {
     <div
       className="flex items-center gap-3 rounded-xl px-3 py-2.5"
       style={{
-        background: featured ? 'rgba(10,102,194,0.12)' : 'rgba(255,255,255,0.04)',
-        border: `1px solid ${featured ? 'rgba(10,102,194,0.25)' : 'rgba(255,255,255,0.07)'}`,
+        background: featured ? 'rgba(10,102,194,0.10)' : 'rgba(15,20,25,0.04)',
+        border: `1px solid ${featured ? 'rgba(10,102,194,0.22)' : 'rgba(15,20,25,0.08)'}`,
       }}
     >
       <div
         className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
         style={{
-          background: featured ? 'rgba(10,102,194,0.2)' : 'rgba(255,255,255,0.07)',
+          background: featured ? 'rgba(10,102,194,0.15)' : 'rgba(15,20,25,0.07)',
         }}
       >
-        <Icon className="w-4 h-4" style={{ color: featured ? '#60b4f8' : 'rgba(255,255,255,0.4)' }} />
+        <Icon className="w-4 h-4" style={{ color: featured ? '#0A66C2' : 'rgba(15,20,25,0.4)' }} />
       </div>
       <div>
-        <div className="text-white font-semibold text-xs">{title}</div>
-        <div className="text-white/40 text-[10px] mt-0.5">{sub}</div>
+        <div className="text-[#0F1419] font-semibold text-xs">{title}</div>
+        <div className="text-[#0F1419]/45 text-[10px] mt-0.5">{sub}</div>
       </div>
     </div>
   );
@@ -152,26 +152,26 @@ export default function Pricing() {
               <div className="mb-2">
                 <div
                   className="text-xs font-bold uppercase tracking-widest mb-3"
-                  style={{ color: plan.featured ? '#60b4f8' : 'rgba(255,255,255,0.4)' }}
+                  style={{ color: plan.featured ? '#0A66C2' : 'rgba(15,20,25,0.4)' }}
                 >
                   {plan.name}
                 </div>
                 <div className="flex items-end gap-1 mb-1">
-                  <span className="font-black text-white tracking-[-0.04em]" style={{ fontSize: '3.25rem', lineHeight: 1 }}>
+                  <span className="font-black text-[#0F1419] tracking-[-0.04em]" style={{ fontSize: '3.25rem', lineHeight: 1 }}>
                     {plan.price}
                   </span>
-                  <span className="text-white/40 text-sm mb-2">{plan.period}</span>
+                  <span className="text-[#0F1419]/45 text-sm mb-2">{plan.period}</span>
                 </div>
-                <div className="text-[#60b4f8] text-sm font-semibold mb-2">
+                <div className="text-[#0A66C2] text-sm font-semibold mb-2">
                   {plan.founderPrice}
                 </div>
                 <div
                   className="text-xs font-semibold mb-3"
-                  style={{ color: plan.featured ? '#60b4f8' : 'rgba(255,255,255,0.35)' }}
+                  style={{ color: plan.featured ? '#0A66C2' : 'rgba(15,20,25,0.4)' }}
                 >
                   {plan.commentRate}
                 </div>
-                <p className="text-white/45 text-sm leading-[1.65]">{plan.desc}</p>
+                <p className="text-[#0F1419]/55 text-sm leading-[1.65]">{plan.desc}</p>
               </div>
 
               {/* CTA */}
@@ -181,7 +181,7 @@ export default function Pricing() {
                 style={
                   plan.featured
                     ? { background: '#0A66C2', color: '#fff', boxShadow: '0 4px 20px rgba(10,102,194,0.4)' }
-                    : { background: 'rgba(255,255,255,0.07)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' }
+                    : { background: 'rgba(15,20,25,0.06)', color: '#0F1419', border: '1px solid rgba(15,20,25,0.10)' }
                 }
                 onMouseEnter={(e) => {
                   e.currentTarget.style.filter = 'brightness(1.1)';
@@ -200,15 +200,15 @@ export default function Pricing() {
                   <li key={feat} className="flex items-start gap-2.5">
                     <Check
                       className="w-4 h-4 flex-shrink-0 mt-0.5"
-                      style={{ color: plan.featured ? '#60b4f8' : 'rgba(255,255,255,0.35)' }}
+                      style={{ color: plan.featured ? '#0A66C2' : 'rgba(15,20,25,0.4)' }}
                     />
-                    <span className="text-sm text-white/60">{feat}</span>
+                    <span className="text-sm text-[#0F1419]/60">{feat}</span>
                   </li>
                 ))}
               </ul>
 
               {/* Feature pills */}
-              <div className="flex flex-col gap-2 pt-4 border-t border-white/[0.06]">
+              <div className="flex flex-col gap-2 pt-4 border-t border-[#0F1419]/[0.07]">
                 {plan.pills.map((pill) => (
                   <FeaturePill key={pill.title} {...pill} featured={plan.featured} />
                 ))}
@@ -223,7 +223,7 @@ export default function Pricing() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="text-center text-white/30 text-sm mt-10"
+          className="text-center text-[#0F1419]/40 text-sm mt-10"
         >
           ✓ Cancel anytime &nbsp;·&nbsp; ✓ No contracts &nbsp;·&nbsp; ✓ 30-day free trial · No credit card required
         </motion.p>

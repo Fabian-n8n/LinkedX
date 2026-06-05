@@ -4,7 +4,7 @@ import { ArrowRight, Zap } from 'lucide-react';
 
 export default function FooterCTA() {
   return (
-    <section className="py-32 px-6 bg-[#0A0B12] relative overflow-hidden">
+    <section className="py-32 px-6 bg-[#F5F1EC] relative overflow-hidden">
       {/* Background glows */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-[#0A66C2]/15 blur-3xl rounded-full" />
@@ -46,7 +46,7 @@ export default function FooterCTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.15 }}
-          className="text-white/50 text-lg leading-[1.75] mb-12 max-w-[560px] mx-auto"
+          className="text-[#0F1419]/60 text-lg leading-[1.75] mb-12 max-w-[560px] mx-auto"
         >
           No promises about "10x growth" or "explosive engagement." Just consistent
           presence, real comments, and a few more of the right conversations
@@ -75,7 +75,7 @@ export default function FooterCTA() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-8 text-white/25 text-sm"
+          className="mt-8 text-[#0F1419]/35 text-sm"
         >
           Built by one person, beta-tested by people who hate AI slop.
         </motion.p>

@@ -54,14 +54,14 @@ function StatCard({ stat, inView }) {
   return (
     <div className="text-center">
       <div
-        className="font-black text-white tracking-[-0.04em] leading-none mb-3"
+        className="font-black text-[#0F1419] tracking-[-0.04em] leading-none mb-3"
         style={{ fontSize: 'clamp(2.1rem, 7vw, 4.5rem)' }}
       >
         <span className="text-gradient-accent">{count.toLocaleString()}</span>
         <span className="text-[#1E86D4]">{stat.suffix}</span>
       </div>
-      <div className="font-semibold text-white/80 text-base mb-1">{stat.label}</div>
-      <div className="text-white/35 text-sm">{stat.sub}</div>
+      <div className="font-semibold text-[#0F1419]/80 text-base mb-1">{stat.label}</div>
+      <div className="text-[#0F1419]/45 text-sm">{stat.sub}</div>
     </div>
   );
 }
@@ -140,7 +140,7 @@ function TestimonialCarousel() {
             </div>
 
             {/* Quote */}
-            <p className="text-white/75 text-lg leading-[1.75] italic mb-7 relative z-10">
+            <p className="text-[#0F1419]/75 text-lg leading-[1.75] italic mb-7 relative z-10">
               "{t.quote}"
             </p>
 
@@ -153,8 +153,8 @@ function TestimonialCarousel() {
                 {t.initials}
               </div>
               <div className="text-left">
-                <div className="text-white font-semibold text-sm">{t.name}</div>
-                <div className="text-white/40 text-xs">{t.role}</div>
+                <div className="text-[#0F1419] font-semibold text-sm">{t.name}</div>
+                <div className="text-[#0F1419]/45 text-xs">{t.role}</div>
               </div>
             </div>
           </motion.div>
@@ -166,7 +166,7 @@ function TestimonialCarousel() {
         {/* Prev */}
         <button
           onClick={prev}
-          className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white/25 transition-all duration-150"
+          className="w-8 h-8 rounded-full border border-[#0F1419]/10 flex items-center justify-center text-[#0F1419]/40 hover:text-[#0F1419] hover:border-[#0F1419]/25 transition-all duration-150"
         >
           <ChevronLeft className="w-4 h-4" />
         </button>
@@ -178,7 +178,7 @@ function TestimonialCarousel() {
               key={i}
               onClick={() => go(i, i > active ? 1 : -1)}
               className="relative h-1 rounded-full overflow-hidden transition-all duration-300"
-              style={{ width: i === active ? 28 : 12, background: 'rgba(255,255,255,0.15)' }}
+              style={{ width: i === active ? 28 : 12, background: 'rgba(15,20,25,0.15)' }}
             >
               {i === active && (
                 <motion.div
@@ -197,7 +197,7 @@ function TestimonialCarousel() {
         {/* Next */}
         <button
           onClick={next}
-          className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white/25 transition-all duration-150"
+          className="w-8 h-8 rounded-full border border-[#0F1419]/10 flex items-center justify-center text-[#0F1419]/40 hover:text-[#0F1419] hover:border-[#0F1419]/25 transition-all duration-150"
         >
           <ChevronRight className="w-4 h-4" />
         </button>
